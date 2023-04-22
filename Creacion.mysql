@@ -1,0 +1,47 @@
+DROP DATABASE veterinaria;
+CREATE DATABASE veterinaria;
+USE veterinaria;
+CREATE TABLE clientes (
+  id_cliente INT NOT NULL AUTO_INCREMENT,
+  dni VARCHAR(10),
+  nombre_completo VARCHAR(100),
+  telefono VARCHAR(15),
+  imagen VARCHAR(255),
+  PRIMARY KEY (id_cliente)
+);
+
+CREATE TABLE animales (
+  id_animal INT NOT NULL AUTO_INCREMENT,
+  id_cliente INT NOT NULL,
+  tipo_animal VARCHAR(50),
+  caracteristicas VARCHAR(255),
+  imagen VARCHAR(255),
+  PRIMARY KEY (id_animal),
+  FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente)
+);
+
+CREATE TABLE citas (
+  id_cita INT NOT NULL AUTO_INCREMENT,
+  id_cliente INT NOT NULL,
+  id_animal INT NOT NULL,
+  fecha DATE,
+  hora_inicio TIME,
+  pendiente BOOLEAN,
+  descripcion VARCHAR(255),
+  PRIMARY KEY (id_cita),
+  FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente),
+  FOREIGN KEY (id_animal) REFERENCES animales(id_animal)
+);
+
+ALTER TABLE animales ADD CONSTRAINT fk_cliente
+  FOREIGN KEY (id_cliente)
+  REFERENCES clientes(id_cliente);
+
+ALTER TABLE citas ADD CONSTRAINT fk_cliente
+  FOREIGN KEY (id_cliente)
+  REFERENCES clientes(id_cliente);
+
+ALTER TABLE citas ADD CONSTRAINT fk_animal
+  FOREIGN KEY (id_animal)
+  REFERENCES animales(id_animal);
+
