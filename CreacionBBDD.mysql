@@ -1,4 +1,4 @@
-DROP DATABASE veterinaria;
+DROP DATABASE IF EXISTS veterinaria;
 CREATE DATABASE veterinaria;
 USE veterinaria;
 CREATE TABLE clientes (
@@ -35,13 +35,15 @@ CREATE TABLE citas (
 
 ALTER TABLE animales ADD CONSTRAINT fk_cliente
   FOREIGN KEY (id_cliente)
-  REFERENCES clientes(id_cliente);
+  REFERENCES clientes(id_cliente)
+  ON DELETE NO ACTION;
 
 ALTER TABLE citas ADD CONSTRAINT fk_cliente
   FOREIGN KEY (id_cliente)
-  REFERENCES clientes(id_cliente);
+  REFERENCES clientes(id_cliente)
+  ON DELETE NO ACTION;
 
 ALTER TABLE citas ADD CONSTRAINT fk_animal
   FOREIGN KEY (id_animal)
-  REFERENCES animales(id_animal);
-
+  REFERENCES animales(id_animal)
+  ON DELETE NO ACTION;
