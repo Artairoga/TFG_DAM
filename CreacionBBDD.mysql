@@ -3,9 +3,9 @@ CREATE DATABASE veterinaria;
 USE veterinaria;
 CREATE TABLE clientes (
   id_cliente INT NOT NULL AUTO_INCREMENT,
-  dni VARCHAR(9),
+  dni CHAR(9),
   nombre_completo VARCHAR(100),
-  telefono VARCHAR(9),
+  telefono CHAR(12),
   imagen VARCHAR(255),
   PRIMARY KEY (id_cliente)
 );
@@ -17,7 +17,7 @@ CREATE TABLE animales (
   caracteristicas VARCHAR(255),
   imagen VARCHAR(255),
   PRIMARY KEY (id_animal),
-  FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente) ON DELETE CASCADE
+  FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente) ON DELETE NO ACTION
 );
 
 CREATE TABLE citas (
@@ -28,5 +28,6 @@ CREATE TABLE citas (
   pendiente BOOLEAN,
   descripcion VARCHAR(255),
   PRIMARY KEY (id_cita),
-  FOREIGN KEY (id_animal) REFERENCES animales(id_animal) ON DELETE CASCADE
+  FOREIGN KEY (id_animal) REFERENCES animales(id_animal) ON DELETE NO ACTION
 );
+
