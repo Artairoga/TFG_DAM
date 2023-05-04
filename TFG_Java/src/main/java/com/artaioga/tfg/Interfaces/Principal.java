@@ -4,8 +4,22 @@
  */
 package com.artaioga.tfg.Interfaces;
 
+import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
+import com.artaioga.tfg.GestionBBDD.CitasDAO;
+import com.artaioga.tfg.GestionBBDD.ClientesDAO;
+import com.artaioga.tfg.GestionBBDD.ConexionBD;
 import com.artaioga.tfg.Interfaces.Animales.*;
 import com.artaioga.tfg.Interfaces.Clientes.*;
+import com.artaioga.tfg.Modelos.Animal;
+import com.artaioga.tfg.Modelos.Cita;
+import com.artaioga.tfg.Modelos.Cliente;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -18,6 +32,8 @@ public class Principal extends javax.swing.JFrame {
      */
     public Principal() {
         initComponents();
+        tableModel = (DefaultTableModel) jTableCitas.getModel();
+        cargarTabla(jTableCitas);
     }
 
     /**
@@ -30,7 +46,7 @@ public class Principal extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTableCitas = new javax.swing.JTable();
         jLabelCitas = new javax.swing.JLabel();
         jButtonNuevaCita = new javax.swing.JButton();
         jButtonBorrarCita = new javax.swing.JButton();
@@ -52,18 +68,15 @@ public class Principal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jTableCitas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Fecha", "Animal", "Cliente", "Descripcion"
+                "Fecha", "Animal", "Cliente", "Descripcion", "Pendiente"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jTableCitas);
 
         jLabelCitas.setText("Citas:");
 
@@ -204,7 +217,7 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItemAnimalesAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAnimalesAltaActionPerformed
-        if(animalesAlta!=null){
+        if (animalesAlta != null) {
             animalesAlta.dispose();
         }
         animalesAlta = new AnimalesAlta(this, false);
@@ -212,7 +225,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemAnimalesAltaActionPerformed
 
     private void jMenuItemAnimalesBajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAnimalesBajaActionPerformed
-       if(animalesBaja!=null){
+        if (animalesBaja != null) {
             animalesBaja.dispose();
         }
         animalesBaja = new AnimalesBaja(this, false);
@@ -220,7 +233,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemAnimalesBajaActionPerformed
 
     private void jMenuItemAnimalesListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAnimalesListaActionPerformed
-        if(animalesLista!=null){
+        if (animalesLista != null) {
             animalesLista.dispose();
         }
         animalesLista = new AnimalesLista(this, false);
@@ -228,7 +241,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemAnimalesListaActionPerformed
 
     private void jMenuItemAnimalesModificacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemAnimalesModificacionActionPerformed
-        if(animalesModificar!=null){
+        if (animalesModificar != null) {
             animalesModificar.dispose();
         }
         animalesModificar = new AnimalesModificar(this, false);
@@ -236,7 +249,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemAnimalesModificacionActionPerformed
 
     private void jMenuItemClientesAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemClientesAltaActionPerformed
-         if(clientesAlta!=null){
+        if (clientesAlta != null) {
             clientesAlta.dispose();
         }
         clientesAlta = new ClientesAlta(this, false);
@@ -244,16 +257,15 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemClientesAltaActionPerformed
 
     private void jMenuItemClientesBajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemClientesBajaActionPerformed
-          if(clientesBaja!=null){
+        if (clientesBaja != null) {
             clientesBaja.dispose();
         }
-        clientesBaja = new ClientesBaja
-        (this, false);
+        clientesBaja = new ClientesBaja(this, false);
         clientesBaja.setVisible(true);
     }//GEN-LAST:event_jMenuItemClientesBajaActionPerformed
 
     private void jMenuItemClientesListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemClientesListaActionPerformed
-         if(clientesLista!=null){
+        if (clientesLista != null) {
             clientesLista.dispose();
         }
         clientesLista = new ClientesLista(this, false);
@@ -261,7 +273,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemClientesListaActionPerformed
 
     private void jMenuItemClientesModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemClientesModificarActionPerformed
-          if(clientesModificar!=null){
+        if (clientesModificar != null) {
             clientesModificar.dispose();
         }
         clientesModificar = new ClientesModificar(this, false);
@@ -269,7 +281,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItemClientesModificarActionPerformed
 
     private void jMenuItemConfiguracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemConfiguracionActionPerformed
-         if(ajustes!=null){
+        if (ajustes != null) {
             ajustes.dispose();
         }
         ajustes = new Ajustes(this, false);
@@ -332,7 +344,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemClientesModificar;
     private javax.swing.JMenuItem jMenuItemConfiguracion;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTableCitas;
     // End of variables declaration//GEN-END:variables
     //Animales
     private AnimalesAlta animalesAlta;
@@ -346,4 +358,34 @@ public class Principal extends javax.swing.JFrame {
     private ClientesModificar clientesModificar;
     //Ajustes
     private Ajustes ajustes;
+    //Tabla
+    private DefaultTableModel tableModel;
+
+    public void cargarTabla(JTable jTableCitas) {
+        try {
+            Connection conexion = ConexionBD.getInstancia().getConexion();
+            CitasDAO citasDao = new CitasDAO(conexion);
+            AnimalesDAO animalesDao=new AnimalesDAO(conexion);
+            ClientesDAO clientesDao=new ClientesDAO(conexion);
+            List<Cita> listaCitas = citasDao.listarCitas();
+            Animal animal;
+            Cliente cliente;
+            for (Cita cita : listaCitas) {
+                animal=animalesDao.buscarAnimal(cita.getIdAnimal());
+                cliente=clientesDao.buscarCliente(cita.getIdCliente());
+                Object[] fila = {
+                    cita.getHoraInicio().toString() + " " + cita.getFecha().toString(), 
+                    animal.getTipoAnimal(),
+                    cliente.getDni(), 
+                    cita.getDescripcion(),
+                    cita.isPendiente()==true?"SI":"NO", 
+                    cita.getIdCita() 
+                };
+                tableModel.addRow(fila);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
 }
