@@ -1,0 +1,18 @@
+INSERT INTO clientes (dni, nombre_completo, telefono, imagen)
+VALUES
+('12345678A', 'Juan Pérez', '+34 123456789', 'https://example.com/juan.jpg'),
+('23456789B', 'María Gómez', '+34 987654321', 'https://example.com/maria.jpg'),
+('34567890C', 'Luis García', '+34 555444333', 'https://example.com/luis.jpg');
+
+INSERT INTO animales (id_cliente, tipo_animal, caracteristicas, imagen)
+VALUES
+(1, 'Perro', 'Labrador Retriever, 2 años, color negro', 'https://example.com/perro1.jpg'),
+(1, 'Gato', 'Europeo Común, 1 año, color blanco', 'https://example.com/gato1.jpg'),
+(2, 'Perro', 'Chihuahua, 3 años, color marrón', 'https://example.com/perro2.jpg'),
+(3, 'Gato', 'Siamés, 4 años, color gris', 'https://example.com/gato2.jpg');
+
+INSERT INTO citas (id_cliente, id_animal, fecha, hora_inicio, pendiente, descripcion)
+VALUES
+(1, 1, '2023-04-25', '10:00:00', true, 'Revisión anual'),
+(2, 3, '2023-04-27', '15:30:00', true, 'Vacunación'),
+(3, 4, '2023-05-02', '11:15:00', true, 'Consulta por problemas digestivos');
