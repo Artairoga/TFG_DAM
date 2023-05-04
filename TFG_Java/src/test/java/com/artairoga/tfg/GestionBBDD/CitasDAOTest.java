@@ -1,7 +1,7 @@
 package com.artairoga.tfg.GestionBBDD;
 
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
-import com.artaioga.tfg.GestionBBDD.PeticionesCitas;
+import com.artaioga.tfg.GestionBBDD.CitasDAO;
 import com.artaioga.tfg.Modelos.Cita;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,15 +10,13 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Time;
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class PeticionesCitasTest {
+public class CitasDAOTest {
     private Connection conexion;
-    private PeticionesCitas peticionesCitas;
+    private CitasDAO citasDAO;
     private Cita cita = new Cita()
             .setIdCliente(1)
             .setIdAnimal(1)
@@ -30,12 +28,12 @@ public class PeticionesCitasTest {
     @BeforeEach
     public void setUp() throws SQLException {
         conexion = ConexionBD.getInstancia().getConexion();
-        peticionesCitas = new PeticionesCitas(conexion);
+        citasDAO = new CitasDAO(conexion);
     }
 
     @Test
     public void testListarCitas() throws SQLException {
-        List<Cita> listaCitas = peticionesCitas.listarCitas();
+        List<Cita> listaCitas = citasDAO.listarCitas();
         assertNotNull(listaCitas);
         Assertions.assertTrue(listaCitas.size() > 0);
 
@@ -55,7 +53,7 @@ public class PeticionesCitasTest {
         // Dado que tengo una cita en la base de datos con id_cita = 1
         int idCita = 1;
         // Cuando ejecuto el método buscarCita con id_cita = 1
-        Cita citaEncontrada = peticionesCitas.buscarCita(idCita);
+        Cita citaEncontrada = citasDAO.buscarCita(idCita);
 
         // Entonces la cita devuelta debería ser igual a la esperada
         assertNotNull(citaEncontrada);
@@ -68,7 +66,7 @@ public class PeticionesCitasTest {
         int idCita = 99;
 
         // Cuando ejecuto el método buscarCita con id_cita = 99
-        Cita citaEncontrada = peticionesCitas.buscarCita(idCita);
+        Cita citaEncontrada = citasDAO.buscarCita(idCita);
 
         // Entonces la cita devuelta debería ser null
         assertNull(citaEncontrada);
@@ -77,9 +75,9 @@ public class PeticionesCitasTest {
     @Test
     public void testInsertarYEliminarCita() throws SQLException {
         // Insertamos la cita, el propio método le da a esta objeto el id insertado
-        peticionesCitas.insertarCita(cita);
+        citasDAO.insertarCita(cita);
         // Buscamos la cita
-        Cita citaObtenida = peticionesCitas.buscarCita(cita.getIdCita());
+        Cita citaObtenida = citasDAO.buscarCita(cita.getIdCita());
         // Confirmamos que todo está bien
         assertNotNull(citaObtenida);
         assertEquals(cita.getIdCita(), citaObtenida.getIdCita());
@@ -90,7 +88,7 @@ public class PeticionesCitasTest {
         assertEquals(cita.isPendiente(), citaObtenida.isPendiente());
         assertEquals(cita.getDescripcion(), citaObtenida.getDescripcion());
         // Borramos la cita que acabamos de insertar
-        int resultado = peticionesCitas.eliminarCita(cita.getIdCita());
+        int resultado = citasDAO.eliminarCita(cita.getIdCita());
         assertEquals(1, resultado);
     }
 

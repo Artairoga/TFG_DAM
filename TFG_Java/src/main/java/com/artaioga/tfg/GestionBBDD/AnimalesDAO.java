@@ -6,10 +6,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PeticionesAnimales {
+public class AnimalesDAO {
     private Connection conexion;
 
-    public PeticionesAnimales(Connection conexion) {
+    public AnimalesDAO(Connection conexion) {
         this.conexion = conexion;
     }
 
