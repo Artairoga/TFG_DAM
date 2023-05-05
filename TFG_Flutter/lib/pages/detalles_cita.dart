@@ -1,20 +1,14 @@
+import 'package:ante_proyecto/modelos/Animales/SolictudesAnimales.dart';
+import 'package:ante_proyecto/modelos/Clientes/SolictudesClientes.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../modelos/Animales/Animales.dart';
-import '../modelos/Citas/Citas.dart';
-import '../modelos/Clientes/Clientes.dart';
+import '../modelos/Animales/Animale.dart';
+import '../modelos/Citas/Cita.dart';
+import '../modelos/Clientes/Cliente.dart';
 
-class DetallesCita extends StatefulWidget {
+class DetallesCita extends StatelessWidget {
   const DetallesCita({Key? key}) : super(key: key);
-
-  @override
-  State<DetallesCita> createState() => _DetallesCitaState();
-}
-
-class _DetallesCitaState extends State<DetallesCita> {
-  late bool _isPendiente = true;
-
   @override
   Widget build(BuildContext context) {
     var cita = ModalRoute.of(context)!.settings.arguments as Citas;
@@ -23,25 +17,7 @@ class _DetallesCitaState extends State<DetallesCita> {
         para obtener el cliente y el animal
         Tambien deberia de cambiar el check del pendiente a que solo eso sea
         stateful
-
-    */
-    // Cliente de prueba
-    final clientePrueba = Clientes(
-      idCliente: 1,
-      dni: '12345678A',
-      nombreCompleto: 'Juan Pérez',
-      telefono: '555123456',
-      imagen: 'https://i.pravatar.cc/300?img=10',
-    );
-
-    // Animal de prueba
-    final animalPrueba = Animales(
-      idAnimal: 1,
-      id_clientes: 1,
-      tipoAnimal: 'Perro',
-      caracteristicas: 'Raza: Labrador Retriever, Edad: 3 años',
-      imagen: 'https://i.pravatar.cc/300?img=30',
-    );
+  */
     return Scaffold(
       appBar: AppBar(
         title: Text('Detalles de la cita'),
@@ -51,100 +27,163 @@ class _DetallesCitaState extends State<DetallesCita> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Text(
-                  'Dueño: ',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '${clientePrueba.nombreCompleto}',
-                  style: TextStyle(fontSize: 18),
-                )
-              ],
-            ),
+            _InfoCliente(cita: cita),
             SizedBox(height: 10),
-            Row(
-              children: [
-                Text(
-                  'Teléfono: ',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '${clientePrueba.telefono}',
-                  style: TextStyle(fontSize: 18),
-                )
-              ],
-            ),
+            _InfoAnimal(cita: cita),
             SizedBox(height: 10),
-            Row(
-              children: [
-                Text(
-                  'Nombre del animal: ',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '${animalPrueba.tipoAnimal}',
-                  style: TextStyle(fontSize: 18),
-                )
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Text(
-                  'Fecha: ',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '${DateFormat('dd/MM/yyyy ').format(cita.fecha!)}',
-                  style: TextStyle(fontSize: 18),
-                )
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Text(
-                  'Hora de inicio: ',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '${cita.horaInicio}',
-                  style: TextStyle(fontSize: 18),
-                )
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Text(
-                  'Pendiente: ',
-                  style: TextStyle(fontSize: 16),
-                ),
-                Checkbox(
-                  value: _isPendiente,
-                  onChanged: (bool? value) {
-                    setState(() {
-                      _isPendiente = value!;
-                    });
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Descripción:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              cita.descripcion!,
-              style: TextStyle(fontSize: 16),
-            ),
+            _InfoCita(cita: cita),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _InfoCliente extends StatelessWidget {
+  _InfoCliente({Key? key, required this.cita}) : super(key: key);
+  Citas cita;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: SolcitudesClientes().obtenerCliente(idCliente: cita.id_clientes!),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+        Clientes cliente = snapshot.data as Clientes;
+          return Column(
+            children: [
+              Row(
+                children: [
+                  Text(
+                    'Dueño: ',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    '${cliente.nombreCompleto}',
+                    style: TextStyle(fontSize: 18),
+                  )
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                children: [
+                  Text(
+                    'Teléfono: ',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    '${cliente.telefono}',
+                    style: TextStyle(fontSize: 18),
+                  )
+                ],
+              )
+            ],
+          );
+        }
+        return Container();
+      },
+    );
+  }
+}
+
+class _InfoAnimal extends StatelessWidget {
+  _InfoAnimal({Key? key, required this.cita}) : super(key: key);
+  Citas cita;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: SolcitudesAnimales().obtenerAnimal(idAnimal: cita.id_animales!),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+        Animales animal = snapshot.data as Animales;
+          return Row(
+            children: [
+              Text(
+                'Nombre del animal: ',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                '${animal.tipoAnimal}',
+                style: TextStyle(fontSize: 18),
+              )
+            ],
+          );
+        }
+        return Container();
+      },
+    );
+  }
+}
+
+class _InfoCita extends StatefulWidget {
+  _InfoCita({Key? key, required this.cita}) : super(key: key);
+  Citas cita;
+
+  @override
+  State<_InfoCita> createState() => _InfoCitaState();
+}
+
+class _InfoCitaState extends State<_InfoCita> {
+  bool _isPendiente = false;
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Text(
+              'Fecha: ',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '${DateFormat('dd/MM/yyyy ').format(widget.cita.fecha!)}',
+              style: TextStyle(fontSize: 18),
+            )
+          ],
+        ),
+        SizedBox(height: 10),
+        Row(
+          children: [
+            Text(
+              'Hora de inicio: ',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            Text(
+              '${widget.cita.horaInicio}',
+              style: TextStyle(fontSize: 18),
+            )
+          ],
+        ),
+        SizedBox(height: 10),
+        Row(
+          children: [
+            Text(
+              'Pendiente: ',
+              style: TextStyle(fontSize: 16),
+            ),
+            Checkbox(
+              value: _isPendiente,
+              onChanged: (bool? value) {
+                setState(() {
+                  _isPendiente = value!;
+                });
+              },
+            ),
+          ],
+        ),
+        SizedBox(height: 10),
+        Text(
+          'Descripción:',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 10),
+        Text(
+          widget.cita.descripcion!,
+          style: TextStyle(fontSize: 16),
+        )
+      ],
     );
   }
 }

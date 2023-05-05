@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:ante_proyecto/modelos/Animales/Animales.dart';
+import 'package:ante_proyecto/modelos/Animales/Animale.dart';
 import 'package:http/http.dart' as http;
 
 import '../../providers/ip_provider.dart';

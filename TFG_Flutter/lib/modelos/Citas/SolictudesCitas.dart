@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import '../../providers/ip_provider.dart';
-import 'Citas.dart';
+import 'Cita.dart';
 import 'RespuestasCitas.dart';
 
 class SolcitudesCitas {

@@ -1,5 +1,4 @@
 import 'package:ante_proyecto/modelos/Citas/SolictudesCitas.dart';
-import 'package:ante_proyecto/modelos/Clientes/Clientes.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -10,10 +9,7 @@ class DetalleCliente extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var cliente = ModalRoute
-        .of(context)!
-        .settings
-        .arguments as Clientes;
+    var cliente = ModalRoute.of(context)!.settings.arguments as Clientes;
     return Scaffold(
       appBar: AppBar(
         title: Text('Detalles del cliente'),
@@ -95,8 +91,8 @@ class _InfoCitas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: SolcitudesCitas().obtenerCitasPorClientes(
-          idCliente: cliente.idCliente!),
+      future: SolcitudesCitas()
+          .obtenerCitasPorClientes(idCliente: cliente.idCliente!),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<Citas> listaCitasCompleta = snapshot.data as List<Citas>;
@@ -106,19 +102,22 @@ class _InfoCitas extends StatelessWidget {
             child: ListView.builder(
               itemCount: listaCitasCompleta.length,
               itemBuilder: (context, index) {
-              return ListTile(
-                leading: Icon(Icons.calendar_today),
-                title: Row(
-                  children: [
-                    Text(DateFormat('dd/MM/yyyy - hh:MM').format(listaCitasCompleta[index].fecha!)),
-                    SizedBox(width: 8.0),
-                    Text(listaCitasCompleta[index].pendiente==0! ? 'Pendiente' : 'Realizada'),
-                  ],
-                ),
-                trailing: Icon(Icons.arrow_forward),
-              );
-            },
-              ),
+                return ListTile(
+                  leading: Icon(Icons.calendar_today),
+                  title: Row(
+                    children: [
+                      Text(DateFormat('dd/MM/yyyy - hh:MM')
+                          .format(listaCitasCompleta[index].fecha!)),
+                      SizedBox(width: 8.0),
+                      Text(listaCitasCompleta[index].pendiente == 0!
+                          ? 'Pendiente'
+                          : 'Realizada'),
+                    ],
+                  ),
+                  trailing: Icon(Icons.arrow_forward),
+                );
+              },
+            ),
           );
         } else {
           return Center(

@@ -1,3 +1,3 @@
-export 'Animales/Animales.dart';
-export 'Citas/Citas.dart';
-export 'Clientes/Clientes.dart';
+export 'Animales/Animale.dart';
+export 'Citas/Cita.dart';
+export 'Clientes/Cliente.dart';

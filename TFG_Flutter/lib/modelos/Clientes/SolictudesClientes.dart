@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import '../../providers/ip_provider.dart';
-import 'Clientes.dart';
+import 'Cliente.dart';
 import 'RespuestasClientes.dart';
 
 class SolcitudesClientes {

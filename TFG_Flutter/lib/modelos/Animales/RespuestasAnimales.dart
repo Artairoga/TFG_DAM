@@ -1,4 +1,4 @@
-import 'package:ante_proyecto/modelos/Animales/Animales.dart';
+import 'package:ante_proyecto/modelos/Animales/Animale.dart';
 
 import '../Page/PageInfo.dart';
 

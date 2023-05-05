@@ -1,5 +1,5 @@
 import '../Page/PageInfo.dart';
-import 'Citas.dart';
+import 'Cita.dart';
 
 class RespuestaCitas {
   RespuestaCitas({

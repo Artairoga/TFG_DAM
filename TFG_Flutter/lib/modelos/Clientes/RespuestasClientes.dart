@@ -1,5 +1,5 @@
 import '../Page/PageInfo.dart';
-import 'Clientes.dart';
+import 'Cliente.dart';
 
 class RespuestaClientes {
   RespuestaClientes({
