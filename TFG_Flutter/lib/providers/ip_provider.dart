@@ -12,7 +12,6 @@ class ConnectionProvider extends ChangeNotifier {
   SharedPreferences? prefs = null;
 
   ConnectionProvider._() {
-    print('LLame al constructor');
     _loadFromPrefs();
   }
 
@@ -53,7 +52,6 @@ class ConnectionProvider extends ChangeNotifier {
     _ip = prefs!.getString('ip') ?? _ip;
     _port = prefs!.getString('port') ?? _port;
     _apiKey = prefs!.getString('apiKey') ?? _apiKey;
-    print('cargue las prefeencias');
     await checkConnection();
     notifyListeners();
   }
@@ -69,7 +67,6 @@ class ConnectionProvider extends ChangeNotifier {
   //inicializa las preferencias
   _initPreferences() async {
     if (prefs == null) {
-      print('Inicialice las preferencias');
       prefs = await SharedPreferences.getInstance();
     }
   }
