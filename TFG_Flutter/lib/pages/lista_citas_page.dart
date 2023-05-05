@@ -22,13 +22,14 @@ class CitasPage extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.done &&
               snapshot.hasData) {
             List<Citas> listaCitas = snapshot.data as List<Citas>;
+            listaCitas.sort((c1, c2) => c1.fecha!.compareTo(c2.fecha!));
             return ListView.builder(
               itemCount: listaCitas.length,
               itemBuilder: (BuildContext context, int index) {
                 Citas cita = listaCitas[index];
                 return ListTile(
                   title:
-                      Text(DateFormat('HH:mm dd/MM/yyyy ').format(cita.fecha!)),
+                      Text((DateFormat('dd/MM/yyyy HH:mm').format(cita.fecha!))),
                   subtitle: Text(cita.descripcion!),
                   trailing: Icon(Icons.arrow_forward),
                   onTap: () {

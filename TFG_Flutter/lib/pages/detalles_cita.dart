@@ -125,9 +125,10 @@ class _InfoCita extends StatefulWidget {
 }
 
 class _InfoCitaState extends State<_InfoCita> {
-  bool _isPendiente = false;
+
   @override
   Widget build(BuildContext context) {
+    bool _isPendiente = widget.cita.pendiente==1;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -151,7 +152,7 @@ class _InfoCitaState extends State<_InfoCita> {
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             Text(
-              '${widget.cita.horaInicio}',
+              '${DateFormat('HH:mm ').format(widget.cita.fecha!)}',
               style: TextStyle(fontSize: 18),
             )
           ],

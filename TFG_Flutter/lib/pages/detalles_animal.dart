@@ -104,9 +104,9 @@ class _InfoCitas extends StatelessWidget {
               itemBuilder: (context, index) {
                 return ListTile(
                   leading: Icon(Icons.calendar_today),
-                  title: Row(
+                  title: Column(
                     children: [
-                      Text(DateFormat('dd/MM/yyyy - hh:MM').format(listaCitasCompleta[index].fecha!)),
+                      Text(DateFormat('dd/MM/yyyy HH:mm').format(listaCitasCompleta[index].fecha!)),
                       SizedBox(width: 8.0),
                       Text(listaCitasCompleta[index].pendiente==0! ? 'Pendiente' : 'Realizada'),
                     ],
