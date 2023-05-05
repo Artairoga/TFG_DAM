@@ -32,7 +32,6 @@ class SolcitudesAnimales {
     final headers = {'xc-token': apikey};
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200) {
-      print(response.body);
       Animales animal =
           RespuestaAnimales.fromJson(jsonDecode(response.body)).list.single;
       return animal;

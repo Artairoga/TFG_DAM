@@ -32,7 +32,6 @@ class SolcitudesClientes {
     final headers = {'xc-token': apikey};
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200) {
-      print(response.body);
       Clientes cliente =
           RespuestaClientes.fromJson(jsonDecode(response.body)).list.single;
       return cliente;
