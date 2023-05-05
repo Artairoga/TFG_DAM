@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../modelos/Animales/SolictudesAnimales.dart';
 import '../modelos/modelos.dart';
-import 'animal_page.dart';
+import 'detalles_animal.dart';
 
 class ListaAnimales extends StatelessWidget {
   const ListaAnimales({Key? key}) : super(key: key);
@@ -34,28 +34,7 @@ class ListaAnimales extends StatelessWidget {
               itemCount: listaAnimales.length,
               itemBuilder: (BuildContext context, int index) {
                 Animales animal = listaAnimales[index];
-                return ListTile(
-                  leading: animal.imagen!.isNotEmpty
-                      ? CircleAvatar(
-                          backgroundImage: NetworkImage(animal.imagen!),
-                        )
-                      : const CircleAvatar(
-                          child: Icon(Icons.pets),
-                        ),
-                  title: Text(animal.tipoAnimal!),
-                  subtitle: Text(animal.tipoAnimal!),
-                  trailing: Icon(Icons.arrow_forward),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) {
-                              return AnimalPage();
-                            },
-                            settings: RouteSettings(arguments: animal)));
-                    // Navegar a la página de detalles del animal
-                  },
-                );
+                return _AnimalTile(animal: animal);
               },
             ),
           );
@@ -69,6 +48,41 @@ class ListaAnimales extends StatelessWidget {
             ),
           );
         }
+      },
+    );
+  }
+}
+
+class _AnimalTile extends StatelessWidget {
+  const _AnimalTile({
+    super.key,
+    required this.animal,
+  });
+
+  final Animales animal;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: animal.imagen!=null
+          ? CircleAvatar(
+              backgroundImage: NetworkImage(animal.imagen!),
+            )
+          : const CircleAvatar(
+              child: Icon(Icons.pets),
+            ),
+      title: Text(animal.tipoAnimal!),
+      subtitle: Text(animal.tipoAnimal!),
+      trailing: Icon(Icons.arrow_forward),
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) {
+                  return AnimalPage();
+                },
+                settings: RouteSettings(arguments: animal)));
+        // Navegar a la página de detalles del animal
       },
     );
   }

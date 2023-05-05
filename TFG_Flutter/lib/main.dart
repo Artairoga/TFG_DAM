@@ -1,7 +1,3 @@
-import 'package:ante_proyecto/modelos/Animales/Animales.dart';
-import 'package:ante_proyecto/pages/animal_page.dart';
-import 'package:ante_proyecto/pages/lista_animales_page.dart';
-import 'package:ante_proyecto/pages/lista_clientes_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

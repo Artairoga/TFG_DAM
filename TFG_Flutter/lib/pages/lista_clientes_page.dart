@@ -1,5 +1,5 @@
 import 'package:ante_proyecto/modelos/Clientes/SolictudesClientes.dart';
-import 'package:ante_proyecto/pages/detalle_cliente.dart';
+import 'package:ante_proyecto/pages/detalles_cliente.dart';
 import 'package:flutter/material.dart';
 
 import '../modelos/modelos.dart';
@@ -33,28 +33,7 @@ class ListaClientes extends StatelessWidget {
               itemCount: listaCientes.length,
               itemBuilder: (BuildContext context, int index) {
                 Clientes cliente = listaCientes[index];
-                return ListTile(
-                  leading: cliente.imagen!.isNotEmpty
-                      ? CircleAvatar(
-                          backgroundImage: NetworkImage(cliente.imagen!),
-                        )
-                      : const CircleAvatar(
-                          child: Icon(Icons.person),
-                        ),
-                  title: Text(cliente.nombreCompleto!),
-                  subtitle: Text(cliente.dni!),
-                  trailing: Icon(Icons.arrow_forward),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) {
-                              return DetalleCliente();
-                            },
-                            settings: RouteSettings(arguments: cliente!)));
-                    // Navegar a la página de detalles del cliente
-                  },
-                );
+                return _TileCliente(cliente: cliente);
               },
             ),
           );
@@ -68,6 +47,41 @@ class ListaClientes extends StatelessWidget {
             ),
           );
         }
+      },
+    );
+  }
+}
+
+class _TileCliente extends StatelessWidget {
+  const _TileCliente({
+    super.key,
+    required this.cliente,
+  });
+
+  final Clientes cliente;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: cliente.imagen!=null
+          ? CircleAvatar(
+              backgroundImage: NetworkImage(cliente.imagen!),
+            )
+          : const CircleAvatar(
+              child: Icon(Icons.person),
+            ),
+      title: Text(cliente.nombreCompleto!),
+      subtitle: Text(cliente.dni!),
+      trailing: Icon(Icons.arrow_forward),
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) {
+                  return DetalleCliente();
+                },
+                settings: RouteSettings(arguments: cliente!)));
+        // Navegar a la página de detalles del cliente
       },
     );
   }
@@ -114,7 +128,7 @@ class ClientSearch extends SearchDelegate {
       itemBuilder: (BuildContext context, int index) {
         Clientes cliente = results[index];
         return ListTile(
-          leading: cliente.imagen!.isNotEmpty
+          leading: cliente.imagen!=null
               ? CircleAvatar(
                   backgroundImage: NetworkImage(cliente.imagen!),
                 )

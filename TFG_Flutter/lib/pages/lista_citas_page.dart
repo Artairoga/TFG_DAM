@@ -1,5 +1,5 @@
 import 'package:ante_proyecto/modelos/Citas/SolictudesCitas.dart';
-import 'package:ante_proyecto/pages/animal_page.dart';
+import 'package:ante_proyecto/pages/detalles_animal.dart';
 import 'package:ante_proyecto/pages/detalles_cita.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

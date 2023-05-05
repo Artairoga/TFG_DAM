@@ -18,6 +18,14 @@ class _DetallesCitaState extends State<DetallesCita> {
   @override
   Widget build(BuildContext context) {
     var cita = ModalRoute.of(context)!.settings.arguments as Citas;
+    /*TODO aqui en base a la cita que nos llega,
+        debemos de hacer una consulta a la base de datos
+        para obtener el cliente y el animal
+        Tambien deberia de cambiar el check del pendiente a que solo eso sea
+        stateful
+
+    */
+    // Cliente de prueba
     final clientePrueba = Clientes(
       idCliente: 1,
       dni: '12345678A',
@@ -26,7 +34,7 @@ class _DetallesCitaState extends State<DetallesCita> {
       imagen: 'https://i.pravatar.cc/300?img=10',
     );
 
-// Animal de prueba
+    // Animal de prueba
     final animalPrueba = Animales(
       idAnimal: 1,
       id_clientes: 1,

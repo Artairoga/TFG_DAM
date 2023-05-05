@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 ConnectionProvider connectionProvider = ConnectionProvider._();
 class ConnectionProvider extends ChangeNotifier {
-  String _ip = '192.168.186.253';
+  String _ip = '192.168.102.253';
   String _port = '8090';
   String _apiKey = '__ZoB_khecUj4pVOKcJKB4FJ91L1Ec-_etLpA4mH';
 
@@ -20,9 +20,8 @@ class ConnectionProvider extends ChangeNotifier {
       {required String newIp, required String newPort}) async {
     try {
       final url = Uri.parse(
-          'http://$newIp:$newPort/api/v1/db/data/noco/p_z1cj1saiajqqvd/Clientes/views/Clientes');
-      final headers = {'xc-token': _apiKey};
-      final response = await http.get(url, headers: headers).timeout(Duration(seconds: 5));
+          'http://$newIp:$newPort');
+      final response = await http.get(url).timeout(Duration(seconds: 5));
       _ConnectionCode = response.statusCode;
       _ip = newIp;
       _port = newPort;
