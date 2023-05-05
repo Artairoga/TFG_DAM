@@ -12,11 +12,14 @@ import com.artaioga.tfg.Modelos.Animal;
 import com.artaioga.tfg.Modelos.Cita;
 import com.artaioga.tfg.Modelos.Cliente;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -88,6 +91,17 @@ public class CitaModificar extends javax.swing.JDialog {
         jLabel6.setText("Cita");
 
         jButton1.setText("Editar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jTextFieldFecha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldFechaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -162,6 +176,44 @@ public class CitaModificar extends javax.swing.JDialog {
         cargarInfo();
     }//GEN-LAST:event_jComboBoxCitasActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Cliente cliente = listarCliente.get(jComboBoxClientes.getSelectedIndex());
+        Animal animal = listarAnimales.get(jComboBoxAnimales.getSelectedIndex());
+        Cita citaModificar = listaCitas.get(jComboBoxCitas.getSelectedIndex());
+        Date fecha = null;
+        Time horaInicio = null;
+        try {
+            fecha = Date.valueOf(jTextFieldFecha.getText());
+            horaInicio = Time.valueOf(jTextFieldHora.getText());
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, "Error,el formato de la fecha o de la hora son incorrectos");
+            return;
+        }
+        Cita cita = new Cita()
+                .setIdCita(citaModificar.getIdCita())
+                .setIdCliente(cliente.getId_cliente())
+                .setIdAnimal(animal.getIdAnimal())
+                .setFecha(fecha)
+                .setHoraInicio(horaInicio)
+                .setPendiente(citaModificar.isPendiente())
+                .setDescripcion(jTextAreaDescripcion.getText());
+        try {
+            Connection conexion = ConexionBD.getInstancia().getConexion();
+            CitasDAO citasDao = new CitasDAO(conexion);
+            citasDao.actualizarCita(cita);
+            cargarComboCitas();
+            cargarComboAnimales();
+            cargarComboClientes();
+            cargarInfo();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTextFieldFechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldFechaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldFechaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -224,11 +276,12 @@ public class CitaModificar extends javax.swing.JDialog {
     private javax.swing.JTextField jTextFieldHora;
     // End of variables declaration//GEN-END:variables
 private DefaultComboBoxModel<String> modelCitas = new DefaultComboBoxModel<>();
-private DefaultComboBoxModel<String> modelAnimal = new DefaultComboBoxModel<>();
-private DefaultComboBoxModel<String> modelCliente = new DefaultComboBoxModel<>();
-private List<Cita> listaCitas;
-private List<Animal> listarAnimales;
-private List<Cliente> listarCliente;
+    private DefaultComboBoxModel<String> modelAnimal = new DefaultComboBoxModel<>();
+    private DefaultComboBoxModel<String> modelCliente = new DefaultComboBoxModel<>();
+    private List<Cita> listaCitas;
+    private List<Animal> listarAnimales;
+    private List<Cliente> listarCliente;
+
     private void cargarComboCitas() {
         modelCitas.removeAllElements();
         try {
@@ -243,6 +296,7 @@ private List<Cliente> listarCliente;
         }
 
     }
+
     private void cargarComboAnimales() {
         modelAnimal.removeAllElements();
         try {
@@ -257,7 +311,7 @@ private List<Cliente> listarCliente;
         }
 
     }
-    
+
     private void cargarComboClientes() {
         modelCliente.removeAllElements();
         try {
@@ -274,33 +328,40 @@ private List<Cliente> listarCliente;
     }
 
     private void cargarInfo() {
-        Cita citaSel=listaCitas.get(jComboBoxCitas.getSelectedIndex());
-        jTextFieldFecha.setText(citaSel.getFecha().toString());
-        jTextFieldHora.setText(citaSel.getHoraInicio().toString());
-        jTextAreaDescripcion.setText(citaSel.getDescripcion());
-        jComboBoxAnimales.setSelectedIndex(getWhereAnimal(listarAnimales, citaSel));
-        jComboBoxClientes.setSelectedIndex(getWhereCliente(listarCliente, citaSel));
+        if (jComboBoxCitas.getSelectedIndex() != -1) {
+            Cita citaSel = listaCitas.get(jComboBoxCitas.getSelectedIndex());
+            jTextFieldFecha.setText(citaSel.getFecha().toString());
+            jTextFieldHora.setText(citaSel.getHoraInicio().toString());
+            jTextAreaDescripcion.setText(citaSel.getDescripcion());
+            jComboBoxAnimales.setSelectedIndex(getWhereAnimal(listarAnimales, citaSel));
+            jComboBoxClientes.setSelectedIndex(getWhereCliente(listarCliente, citaSel));
+        }
     }
-    private int getWhereAnimal(List<Animal> list,Cita cita) {
+
+    private int getWhereAnimal(List<Animal> list, Cita cita) {
         //porque llega aqui null?
-        if(listarAnimales!=null)
-        for (int i = 0; i < list.size(); i++) {
-            Animal animalTest=list.get(i);
-            if (animalTest.getIdAnimal()==cita.getIdAnimal()) {
-                return i;
+        if (listarAnimales != null) {
+            for (int i = 0; i < list.size(); i++) {
+                Animal animalTest = list.get(i);
+                if (animalTest.getIdAnimal() == cita.getIdAnimal()) {
+                    return i;
+                }
             }
         }
         return -1;
     }
-    private int getWhereCliente(List<Cliente> list,Cita cita) {
+
+    private int getWhereCliente(List<Cliente> list, Cita cita) {
         //porque llega aqui null?
-        if(listarCliente!=null)
-        for (int i = 0; i < list.size(); i++) {
-            Cliente clienteTest=list.get(i);
-            if (clienteTest.getId_cliente()==cita.getIdCliente()) {
-                return i;
+        if (listarCliente != null) {
+            for (int i = 0; i < list.size(); i++) {
+                Cliente clienteTest = list.get(i);
+                if (clienteTest.getId_cliente() == cita.getIdCliente()) {
+                    return i;
+                }
             }
         }
         return -1;
     }
+
 }
