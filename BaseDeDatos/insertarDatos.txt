@@ -1,18 +1,22 @@
-INSERT INTO clientes (dni, nombre_completo, telefono, imagen)
-VALUES
-('12345678A', 'Juan Pérez', '+34 123456789', 'https://example.com/juan.jpg'),
-('23456789B', 'María Gómez', '+34 987654321', 'https://example.com/maria.jpg'),
-('34567890C', 'Luis García', '+34 555444333', 'https://example.com/luis.jpg');
+INSERT INTO clientes (id_cliente,dni, nombre_completo, telefono) VALUES
+(1,'12345678A', 'Juan Pérez', '123456789'),
+(2,'23456789B', 'María García', '987654321'),
+(3,'34567890C', 'Pedro López', '666777888'),
+(4,'45678901D', 'Lucía Martínez', '111222333'),
+(5,'56789012E', 'Antonio Rodríguez', '444555666');
 
-INSERT INTO animales (id_cliente, tipo_animal, caracteristicas, imagen)
-VALUES
-(1, 'Perro', 'Labrador Retriever, 2 años, color negro', 'https://example.com/perro1.jpg'),
-(1, 'Gato', 'Europeo Común, 1 año, color blanco', 'https://example.com/gato1.jpg'),
-(2, 'Perro', 'Chihuahua, 3 años, color marrón', 'https://example.com/perro2.jpg'),
-(3, 'Gato', 'Siamés, 4 años, color gris', 'https://example.com/gato2.jpg');
 
-INSERT INTO citas (id_cliente, id_animal, fecha, hora_inicio, pendiente, descripcion)
-VALUES
-(1, 1, '2023-04-25', '10:00:00', true, 'Revisión anual'),
-(2, 3, '2023-04-27', '15:30:00', true, 'Vacunación'),
-(3, 4, '2023-05-02', '11:15:00', true, 'Consulta por problemas digestivos');
+INSERT INTO animales (id_animal,id_cliente, tipo_animal, caracteristicas) VALUES
+(1,1, 'Perro', 'Golden Retriever de 4 años'),
+(2,2, 'Gato', 'Siamés de 2 años'),
+(3,3, 'Perro', 'Labrador de 5 años'),
+(4,4, 'Gato', 'Persa de 3 años'),
+(5,5, 'Perro', 'Bulldog Francés de 6 años');
+
+
+INSERT INTO citas (id_animal,id_cliente, fecha, hora_inicio, pendiente, descripcion) VALUES
+(1,1, '2023-05-10', '14:30:00', TRUE, 'Revisión anual'),
+(2,2, '2023-05-12', '16:00:00', TRUE, 'Vacunación'),
+(3,3, '2023-05-11', '10:00:00', TRUE, 'Revisión por dolor abdominal'),
+(4,4, '2023-05-13', '11:30:00', TRUE, 'Corte de uñas'),
+(5,5, '2023-05-15', '09:00:00', TRUE, 'Revisión por tos crónica');
