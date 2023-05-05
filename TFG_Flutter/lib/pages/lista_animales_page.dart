@@ -72,7 +72,7 @@ class _AnimalTile extends StatelessWidget {
               child: Icon(Icons.pets),
             ),
       title: Text(animal.tipoAnimal!),
-      subtitle: Text(animal.tipoAnimal!),
+      subtitle: Text(animal.caracteristicas!),
       trailing: Icon(Icons.arrow_forward),
       onTap: () {
         Navigator.push(
@@ -127,19 +127,26 @@ class AnimalSearch extends SearchDelegate {
     return ListView.builder(
       itemCount: results.length,
       itemBuilder: (BuildContext context, int index) {
+        Animales animal = results[index];
         return ListTile(
-          leading: results[index].imagen!.isNotEmpty
+          leading: animal.imagen!=null
               ? CircleAvatar(
-                  backgroundImage: NetworkImage(results[index].imagen!),
+                  backgroundImage: NetworkImage(animal.imagen!),
                 )
               : const CircleAvatar(
                   child: Icon(Icons.pets),
                 ),
-          title: Text(results[index].tipoAnimal!),
-          subtitle: Text(results[index].tipoAnimal!),
+          title: Text(animal.tipoAnimal!),
+          subtitle: Text(animal.caracteristicas!),
           trailing: Icon(Icons.arrow_forward),
           onTap: () {
-            // Navegar a la página de detalles del animal
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) {
+                      return AnimalPage();
+                    },
+                    settings: RouteSettings(arguments: animal)));
           },
         );
       },
@@ -156,19 +163,26 @@ class AnimalSearch extends SearchDelegate {
     return ListView.builder(
       itemCount: results.length,
       itemBuilder: (BuildContext context, int index) {
+        Animales animal = results[index];
         return ListTile(
-          leading: results[index].imagen!.isNotEmpty
+          leading: animal.imagen!=null
               ? CircleAvatar(
-                  backgroundImage: NetworkImage(results[index].imagen!),
+                  backgroundImage: NetworkImage(animal.imagen!),
                 )
               : const CircleAvatar(
                   child: Icon(Icons.pets),
                 ),
-          title: Text(results[index].tipoAnimal!),
-          subtitle: Text(results[index].tipoAnimal!),
+          title: Text(animal.tipoAnimal!),
+          subtitle: Text(animal.caracteristicas!),
           trailing: Icon(Icons.arrow_forward),
           onTap: () {
-            // Navegar a la página de detalles del animal
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) {
+                      return AnimalPage();
+                    },
+                    settings: RouteSettings(arguments: animal)));
           },
         );
       },

@@ -63,7 +63,7 @@ class _TileCliente extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: cliente.imagen!=null
+      leading: cliente.imagen != null
           ? CircleAvatar(
               backgroundImage: NetworkImage(cliente.imagen!),
             )
@@ -128,7 +128,7 @@ class ClientSearch extends SearchDelegate {
       itemBuilder: (BuildContext context, int index) {
         Clientes cliente = results[index];
         return ListTile(
-          leading: cliente.imagen!=null
+          leading: cliente.imagen != null
               ? CircleAvatar(
                   backgroundImage: NetworkImage(cliente.imagen!),
                 )
@@ -139,7 +139,13 @@ class ClientSearch extends SearchDelegate {
           subtitle: Text(cliente.dni!),
           trailing: Icon(Icons.arrow_forward),
           onTap: () {
-            // Navegar a la página de detalles del cliente
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) {
+                      return DetalleCliente();
+                    },
+                    settings: RouteSettings(arguments: cliente!)));
           },
         );
       },
@@ -158,7 +164,7 @@ class ClientSearch extends SearchDelegate {
       itemBuilder: (BuildContext context, int index) {
         Clientes cliente = results[index];
         return ListTile(
-          leading: cliente.imagen!.isNotEmpty
+          leading: cliente.imagen != null
               ? CircleAvatar(
                   backgroundImage: NetworkImage(cliente.imagen!),
                 )
@@ -169,7 +175,13 @@ class ClientSearch extends SearchDelegate {
           subtitle: Text(cliente.dni!),
           trailing: Icon(Icons.arrow_forward),
           onTap: () {
-            // Navegar a la página de detalles del cliente
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) {
+                      return DetalleCliente();
+                    },
+                    settings: RouteSettings(arguments: cliente!)));
           },
         );
       },
