@@ -4,6 +4,20 @@
  */
 package com.artaioga.tfg.Interfaces.Citas;
 
+import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
+import com.artaioga.tfg.GestionBBDD.CitasDAO;
+import com.artaioga.tfg.GestionBBDD.ClientesDAO;
+import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.Modelos.Animal;
+import com.artaioga.tfg.Modelos.Cita;
+import com.artaioga.tfg.Modelos.Cliente;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author artai
@@ -16,6 +30,13 @@ public class CitaModificar extends javax.swing.JDialog {
     public CitaModificar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        jComboBoxCitas.setModel(modelCitas);
+        jComboBoxClientes.setModel(modelCliente);
+        jComboBoxAnimales.setModel(modelAnimal);
+        cargarComboCitas();
+        cargarComboAnimales();
+        cargarComboClientes();
+        cargarInfo();
     }
 
     /**
@@ -30,17 +51,17 @@ public class CitaModificar extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        jTextFieldHora = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jTextAreaDescripcion = new javax.swing.JTextArea();
         jLabel5 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jComboBox3 = new javax.swing.JComboBox<>();
+        jComboBoxClientes = new javax.swing.JComboBox<>();
+        jComboBoxAnimales = new javax.swing.JComboBox<>();
+        jComboBoxCitas = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jTextFieldFecha = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -50,28 +71,19 @@ public class CitaModificar extends javax.swing.JDialog {
 
         jLabel3.setText("Fecha");
 
-        jTextField1.setText("jTextField1");
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
-            }
-        });
-
         jLabel4.setText("Hora");
 
-        jTextField2.setText("jTextField1");
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        jTextAreaDescripcion.setColumns(20);
+        jTextAreaDescripcion.setRows(5);
+        jScrollPane1.setViewportView(jTextAreaDescripcion);
 
         jLabel5.setText("Descripcion");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBoxCitas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxCitasActionPerformed(evt);
+            }
+        });
 
         jLabel6.setText("Cita");
 
@@ -84,30 +96,31 @@ public class CitaModificar extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jComboBoxCitas, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jComboBoxClientes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel3)
-                                    .addComponent(jLabel4))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTextField2)
-                                    .addComponent(jTextField1)))
-                            .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 379, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6)
                             .addComponent(jButton1))
-                        .addGap(0, 9, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBoxAnimales, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextFieldHora, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextFieldFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 0, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -116,38 +129,38 @@ public class CitaModificar extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jComboBoxCitas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jComboBoxClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jComboBoxAnimales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jTextFieldFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    private void jComboBoxCitasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxCitasActionPerformed
+        cargarInfo();
+    }//GEN-LAST:event_jComboBoxCitasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -196,9 +209,9 @@ public class CitaModificar extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
+    private javax.swing.JComboBox<String> jComboBoxAnimales;
+    private javax.swing.JComboBox<String> jComboBoxCitas;
+    private javax.swing.JComboBox<String> jComboBoxClientes;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -206,8 +219,88 @@ public class CitaModificar extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextArea jTextAreaDescripcion;
+    private javax.swing.JTextField jTextFieldFecha;
+    private javax.swing.JTextField jTextFieldHora;
     // End of variables declaration//GEN-END:variables
+private DefaultComboBoxModel<String> modelCitas = new DefaultComboBoxModel<>();
+private DefaultComboBoxModel<String> modelAnimal = new DefaultComboBoxModel<>();
+private DefaultComboBoxModel<String> modelCliente = new DefaultComboBoxModel<>();
+private List<Cita> listaCitas;
+private List<Animal> listarAnimales;
+private List<Cliente> listarCliente;
+    private void cargarComboCitas() {
+        modelCitas.removeAllElements();
+        try {
+            Connection conexion = ConexionBD.getInstancia().getConexion();
+            CitasDAO citasDao = new CitasDAO(conexion);
+            listaCitas = citasDao.listarCitas();
+            for (Cita cita : listaCitas) {
+                modelCitas.addElement(cita.toString());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CitaModificar.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+    private void cargarComboAnimales() {
+        modelAnimal.removeAllElements();
+        try {
+            Connection conexion = ConexionBD.getInstancia().getConexion();
+            AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
+            listarAnimales = animalesDAO.listar();
+            for (Animal animal : listarAnimales) {
+                modelAnimal.addElement(String.valueOf(animal.getIdAnimal()));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CitaModificar.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+    
+    private void cargarComboClientes() {
+        modelCliente.removeAllElements();
+        try {
+            Connection conexion = ConexionBD.getInstancia().getConexion();
+            ClientesDAO clientesDAO = new ClientesDAO(conexion);
+            listarCliente = clientesDAO.listarClientes();
+            for (Cliente cliente : listarCliente) {
+                modelCliente.addElement(String.valueOf(cliente.getDni()));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CitaModificar.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    private void cargarInfo() {
+        Cita citaSel=listaCitas.get(jComboBoxCitas.getSelectedIndex());
+        jTextFieldFecha.setText(citaSel.getFecha().toString());
+        jTextFieldHora.setText(citaSel.getHoraInicio().toString());
+        jTextAreaDescripcion.setText(citaSel.getDescripcion());
+        jComboBoxAnimales.setSelectedIndex(getWhereAnimal(listarAnimales, citaSel));
+        jComboBoxClientes.setSelectedIndex(getWhereCliente(listarCliente, citaSel));
+    }
+    private int getWhereAnimal(List<Animal> list,Cita cita) {
+        //porque llega aqui null?
+        if(listarAnimales!=null)
+        for (int i = 0; i < list.size(); i++) {
+            Animal animalTest=list.get(i);
+            if (animalTest.getIdAnimal()==cita.getIdAnimal()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    private int getWhereCliente(List<Cliente> list,Cita cita) {
+        //porque llega aqui null?
+        if(listarCliente!=null)
+        for (int i = 0; i < list.size(); i++) {
+            Cliente clienteTest=list.get(i);
+            if (clienteTest.getId_cliente()==cita.getIdCliente()) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }

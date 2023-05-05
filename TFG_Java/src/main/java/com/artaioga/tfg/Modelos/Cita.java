@@ -3,13 +3,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.artaioga.tfg.Modelos;
+
 import java.sql.Date;
 import java.sql.Time;
+
 /**
  *
  * @author artai
  */
 public class Cita {
+
     private int idCita;
     private int idCliente;
     private int idAnimal;
@@ -18,7 +21,8 @@ public class Cita {
     private boolean pendiente;
     private String descripcion;
 
-    public Cita() {}
+    public Cita() {
+    }
 
     public Cita(int idCita, int idCliente, int idAnimal, Date fecha, Time horaInicio, boolean pendiente, String descripcion) {
         this.idCita = idCita;
@@ -95,8 +99,8 @@ public class Cita {
 
     @Override
     public String toString() {
-        return "Cita{" + "idCita=" + idCita + ", idCliente=" + idCliente + ", idAnimal=" + idAnimal + ", fecha=" + fecha + ", horaInicio=" + horaInicio + ", pendiente=" + pendiente + ", descripcion=" + descripcion + '}';
+        return String.format("Cita [ID: %d, Cliente: %s, Mascota: %s, Fecha: %s, Hora: %s, Pendiente: %s, Descripción: %s]",
+                idCita, idCliente, idAnimal, fecha, horaInicio, pendiente ? "Sí" : "No", descripcion);
     }
-    
-}
 
+}

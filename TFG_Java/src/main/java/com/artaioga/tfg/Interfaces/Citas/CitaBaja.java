@@ -4,14 +4,10 @@
  */
 package com.artaioga.tfg.Interfaces.Citas;
 
-import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
 import com.artaioga.tfg.GestionBBDD.CitasDAO;
-import com.artaioga.tfg.GestionBBDD.ClientesDAO;
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
 import com.artaioga.tfg.Interfaces.Principal;
-import com.artaioga.tfg.Modelos.Animal;
 import com.artaioga.tfg.Modelos.Cita;
-import com.artaioga.tfg.Modelos.Cliente;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -33,7 +29,7 @@ public class CitaBaja extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         jComboBox1.setModel(model);
-        cargarCombo();
+        cargarComboCitas();
     }
 
     /**
@@ -149,7 +145,8 @@ public class CitaBaja extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
    DefaultComboBoxModel<Cita> model = new DefaultComboBoxModel<>();
-    private void cargarCombo(){
+
+    private void cargarComboCitas() {
         model.removeAllElements();
         try {
             Connection conexion = ConexionBD.getInstancia().getConexion();
@@ -162,6 +159,5 @@ public class CitaBaja extends javax.swing.JDialog {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    
-}
+    }
 }
