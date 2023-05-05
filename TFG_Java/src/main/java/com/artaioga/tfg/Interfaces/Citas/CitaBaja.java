@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 /**
@@ -93,7 +94,20 @@ public class CitaBaja extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        int id_cita;
+        if((id_cita=jComboBox1.getSelectedIndex())==-1){
+            JOptionPane.showMessageDialog(this, "No hay cita seleccionada");
+            return;
+        }
+        Cita citaModificar = listaCitas.get(id_cita);
+        try {
+            Connection conexion = ConexionBD.getInstancia().getConexion();
+            CitasDAO citasDao = new CitasDAO(conexion);
+            citasDao.eliminarCita(citaModificar.getIdCita());
+            cargarComboCitas();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -145,13 +159,13 @@ public class CitaBaja extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
    DefaultComboBoxModel<Cita> model = new DefaultComboBoxModel<>();
-
+  List<Cita> listaCitas;
     private void cargarComboCitas() {
         model.removeAllElements();
         try {
             Connection conexion = ConexionBD.getInstancia().getConexion();
             CitasDAO citasDao = new CitasDAO(conexion);
-            List<Cita> listaCitas = citasDao.listarCitas();
+            listaCitas = citasDao.listarCitas();
             for (Cita cita : listaCitas) {
                 model.addElement(cita);
             }
