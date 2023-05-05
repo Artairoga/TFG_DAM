@@ -9,6 +9,9 @@ import com.artaioga.tfg.GestionBBDD.CitasDAO;
 import com.artaioga.tfg.GestionBBDD.ClientesDAO;
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
 import com.artaioga.tfg.Interfaces.Animales.*;
+import com.artaioga.tfg.Interfaces.Citas.CitaAlta;
+import com.artaioga.tfg.Interfaces.Citas.CitaBaja;
+import com.artaioga.tfg.Interfaces.Citas.CitaModificar;
 import com.artaioga.tfg.Interfaces.Clientes.*;
 import com.artaioga.tfg.Modelos.Animal;
 import com.artaioga.tfg.Modelos.Cita;
@@ -81,10 +84,25 @@ public class Principal extends javax.swing.JFrame {
         jLabelCitas.setText("Citas:");
 
         jButtonNuevaCita.setText("Nueva Cita");
+        jButtonNuevaCita.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonNuevaCitaActionPerformed(evt);
+            }
+        });
 
         jButtonBorrarCita.setText("Borrar Cita");
+        jButtonBorrarCita.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonBorrarCitaActionPerformed(evt);
+            }
+        });
 
         jButtonEditarCita.setText("Editar Cita");
+        jButtonEditarCita.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonEditarCitaActionPerformed(evt);
+            }
+        });
 
         jMenuAnimales.setText("Animales");
 
@@ -183,34 +201,28 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1)
+                    .addComponent(jLabelCitas)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelCitas)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButtonNuevaCita)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonBorrarCita)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonEditarCita, javax.swing.GroupLayout.PREFERRED_SIZE, 265, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jButtonNuevaCita, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonBorrarCita, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButtonEditarCita, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)))
                 .addContainerGap())
         );
-
-        layout.linkSize(javax.swing.SwingConstants.HORIZONTAL, new java.awt.Component[] {jButtonBorrarCita, jButtonEditarCita, jButtonNuevaCita});
-
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabelCitas)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 294, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButtonNuevaCita)
                     .addComponent(jButtonBorrarCita)
                     .addComponent(jButtonEditarCita))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -288,6 +300,30 @@ public class Principal extends javax.swing.JFrame {
         ajustes.setVisible(true);
     }//GEN-LAST:event_jMenuItemConfiguracionActionPerformed
 
+    private void jButtonNuevaCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNuevaCitaActionPerformed
+        if (citaAlta != null) {
+            citaAlta.dispose();
+        }
+        citaAlta = new CitaAlta(this, false);
+        citaAlta.setVisible(true);
+    }//GEN-LAST:event_jButtonNuevaCitaActionPerformed
+
+    private void jButtonBorrarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBorrarCitaActionPerformed
+        if (citaBaja != null) {
+            citaBaja.dispose();
+        }
+        citaBaja = new CitaBaja(this, false);
+        citaBaja.setVisible(true);
+    }//GEN-LAST:event_jButtonBorrarCitaActionPerformed
+
+    private void jButtonEditarCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonEditarCitaActionPerformed
+        if (citaModificar != null) {
+            citaModificar.dispose();
+        }
+        citaModificar = new CitaModificar(this, false);
+        citaModificar.setVisible(true);
+    }//GEN-LAST:event_jButtonEditarCitaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -356,6 +392,10 @@ public class Principal extends javax.swing.JFrame {
     private ClientesBaja clientesBaja;
     private ClientesLista clientesLista;
     private ClientesModificar clientesModificar;
+    //Citas
+    private CitaAlta citaAlta;
+    private CitaBaja citaBaja;
+    private CitaModificar citaModificar;
     //Ajustes
     private Ajustes ajustes;
     //Tabla
@@ -374,7 +414,7 @@ public class Principal extends javax.swing.JFrame {
                 animal=animalesDao.buscarAnimal(cita.getIdAnimal());
                 cliente=clientesDao.buscarCliente(cita.getIdCliente());
                 Object[] fila = {
-                    cita.getHoraInicio().toString() + " " + cita.getFecha().toString(), 
+                    cita.getFecha().toString()+"  -  "+cita.getHoraInicio().toString(), 
                     animal.getTipoAnimal(),
                     cliente.getDni(), 
                     cita.getDescripcion(),
