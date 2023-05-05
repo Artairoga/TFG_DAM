@@ -92,5 +92,11 @@ public class Cita {
         this.descripcion = descripcion;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "Cita{" + "idCita=" + idCita + ", idCliente=" + idCliente + ", idAnimal=" + idAnimal + ", fecha=" + fecha + ", horaInicio=" + horaInicio + ", pendiente=" + pendiente + ", descripcion=" + descripcion + '}';
+    }
+    
 }
 
