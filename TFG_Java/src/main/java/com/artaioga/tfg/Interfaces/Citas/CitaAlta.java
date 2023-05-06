@@ -58,7 +58,7 @@ public class CitaAlta extends javax.swing.JDialog {
         jLabel3 = new javax.swing.JLabel();
         jTextFieldFecha = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        jButtonNueva = new javax.swing.JButton();
         jTextFieldHora = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -83,10 +83,10 @@ public class CitaAlta extends javax.swing.JDialog {
 
         jLabel4.setText("Hora");
 
-        jButton1.setText("Nueva");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonNueva.setText("Nueva");
+        jButtonNueva.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonNuevaActionPerformed(evt);
             }
         });
 
@@ -107,7 +107,7 @@ public class CitaAlta extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jComboBoxClientes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jLabel5)
-                    .addComponent(jButton1)
+                    .addComponent(jButtonNueva)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3)
@@ -142,7 +142,7 @@ public class CitaAlta extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addComponent(jButtonNueva)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -153,11 +153,12 @@ public class CitaAlta extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextFieldFechaActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonNuevaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNuevaActionPerformed
         Cliente cliente = listarCliente.get(jComboBoxClientes.getSelectedIndex());
         Animal animal = listarAnimales.get(jComboBoxAnimales.getSelectedIndex());
         Date fecha = null;
         Time horaInicio = null;
+        //Try catch para gestionar los formatos de las horas
         try {
             fecha = Date.valueOf(jTextFieldFecha.getText());
             horaInicio = Time.valueOf(jTextFieldHora.getText());
@@ -165,6 +166,7 @@ public class CitaAlta extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Error,el formato de la fecha o de la hora son incorrectos");
             return;
         }
+        //Cita base (builder pattern)
         Cita cita = new Cita()
                 .setIdCliente(cliente.getId_cliente())
                 .setIdAnimal(animal.getIdAnimal())
@@ -172,20 +174,17 @@ public class CitaAlta extends javax.swing.JDialog {
                 .setHoraInicio(horaInicio)
                 .setPendiente(true)
                 .setDescripcion(jTextAreaDescripcion.getText());
+        //La inserto en la bbdd
         try {
             Connection conexion = ConexionBD.getInstancia().getConexion();
             CitasDAO citasDao = new CitasDAO(conexion);
             citasDao.insertarCita(cita);
             JOptionPane.showMessageDialog(this, "Alta correcta!");
-            jTextFieldFecha.setText("");
-            jTextFieldHora.setText("");
-            jTextAreaDescripcion.setText("");
-            cargarComboAnimales();
-            cargarComboClientes();
+            this.dispose();
         } catch (SQLException e) {
             System.out.println(e);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonNuevaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -231,7 +230,7 @@ public class CitaAlta extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonNueva;
     private javax.swing.JComboBox<String> jComboBoxAnimales;
     private javax.swing.JComboBox<String> jComboBoxClientes;
     private javax.swing.JLabel jLabel1;
@@ -244,11 +243,16 @@ public class CitaAlta extends javax.swing.JDialog {
     private javax.swing.JTextField jTextFieldFecha;
     private javax.swing.JTextField jTextFieldHora;
     // End of variables declaration//GEN-END:variables
-private DefaultComboBoxModel<String> modelAnimal = new DefaultComboBoxModel<>();
-private DefaultComboBoxModel<String> modelCliente = new DefaultComboBoxModel<>();
-private List<Animal> listarAnimales;
-private List<Cliente> listarCliente;
- private void cargarComboAnimales() {
+    //Modelos combo
+    private DefaultComboBoxModel<String> modelAnimal = new DefaultComboBoxModel<>();
+    private DefaultComboBoxModel<String> modelCliente = new DefaultComboBoxModel<>();
+    //Modelos listas
+    private List<Animal> listarAnimales;
+    private List<Cliente> listarCliente;
+    /**
+     * Carga la informacion correspondiente en el combo de animales
+     */
+    private void cargarComboAnimales() {
         modelAnimal.removeAllElements();
         try {
             Connection conexion = ConexionBD.getInstancia().getConexion();
@@ -262,7 +266,9 @@ private List<Cliente> listarCliente;
         }
 
     }
-    
+    /**
+     * Carga la informacion correspondiente en el combo de clientes
+     */
     private void cargarComboClientes() {
         modelCliente.removeAllElements();
         try {

@@ -123,9 +123,13 @@ public class AnimalesLista extends javax.swing.JDialog {
     private javax.swing.JList<String> jListAnimales;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
+    //Lista de animales
     private List<Animal> listaAnimales;
+    //Modelos Combo
     private DefaultListModel<String> modelAnimal = new DefaultListModel<>();
-
+    /**
+     * Rellena el combo de animales con la informacion correspondiente
+     */
     private void cargarComboAnimales() {
         modelAnimal.removeAllElements();
         try {

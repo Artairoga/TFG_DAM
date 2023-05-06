@@ -175,30 +175,31 @@ public class AnimalesModificar extends javax.swing.JDialog {
         int id_combo_clientes = jComboBoxCliente.getSelectedIndex();
         Connection conexion = ConexionBD.getInstancia().getConexion();
         AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
+        //Compruebo que hay un animal seleccionado
         if (id_combo_animales != -1) {
-            try {
-                //Gestiono el animal base
-                Animal animalModificar = listarAnimales.get(id_combo_animales);
-                Cliente cliente = listarClientes.get(id_combo_clientes);
-                animalModificar
-                        .setCaracteristicas(jTextAreaCaracteristicas.getText())
-                        .setTipoAnimal(txtRaza.getText())
-                        .setIdCliente(cliente.getId_cliente());
-                //Gestiono la imagen solo la subo si la imagen actual es diferente de la de la bbdd
-                if (imagenFile.getName() != animalModificar.getImagen()) {
-                    if (imagenFile != null) {
-                        UUID uuid = UUID.randomUUID();
-                        FTPController ftpController = new FTPController();
-                        String extension = "";
-                        
-                        int i = imagenFile.getName().lastIndexOf('.');
-                        if (i > 0) {
-                            extension = imagenFile.getName().substring(i + 1);
-                        }
-                        animalModificar.setImagen(uuid.toString() + "." + extension);
-                        ftpController.uploadFile(imagenFile, uuid.toString() + "." + extension);
+            //Gestiono el animal base
+            Animal animalModificar = listarAnimales.get(id_combo_animales);
+            Cliente cliente = listarClientes.get(id_combo_clientes);
+            animalModificar
+                    .setCaracteristicas(jTextAreaCaracteristicas.getText())
+                    .setTipoAnimal(txtRaza.getText())
+                    .setIdCliente(cliente.getId_cliente());
+            //Gestiono la imagen solo la subo si la imagen actual es diferente de la de la bbdd
+            if (imagenFile.getName() != animalModificar.getImagen()) {
+                if (imagenFile != null) {
+                    UUID uuid = UUID.randomUUID();
+                    FTPController ftpController = new FTPController();
+                    String extension = "";
+                    int i = imagenFile.getName().lastIndexOf('.');
+                    if (i > 0) {
+                        extension = imagenFile.getName().substring(i + 1);
                     }
+                    animalModificar.setImagen(uuid.toString() + "." + extension);
+                    ftpController.uploadFile(imagenFile, uuid.toString() + "." + extension);
                 }
+            }
+            //Por ultimo subo los cambios a la base de datos
+            try {
                 animalesDAO.actualizarAnimal(animalModificar);
                 JOptionPane.showMessageDialog(this, "Animal modificado correctamente");
                 this.dispose();
@@ -287,11 +288,16 @@ public class AnimalesModificar extends javax.swing.JDialog {
     private javax.swing.JTextField txtRaza;
     // End of variables declaration//GEN-END:variables
     private File imagenFile;
+    //Listas 
     private List<Animal> listarAnimales;
     private List<Cliente> listarClientes;
+    //Modelos combos
     private DefaultComboBoxModel<String> modelAnimal = new DefaultComboBoxModel<>();
     private DefaultComboBoxModel<String> modelCliente = new DefaultComboBoxModel<>();
 
+    /**
+     * Cargo la informacion correspondiente en el combo de los animales
+     */
     private void cargarComboAnimales() {
         modelAnimal.removeAllElements();
         try {
@@ -306,7 +312,9 @@ public class AnimalesModificar extends javax.swing.JDialog {
         }
 
     }
-
+    /**
+     * Cargo la informacion correspondiente en el combo de clientes
+     */
     private void cargarComboClientes() {
         modelCliente.removeAllElements();
         try {
@@ -321,7 +329,12 @@ public class AnimalesModificar extends javax.swing.JDialog {
         }
 
     }
-
+    /**
+     * Devuelve la posicion de la lista en la que esta el dueño de un animal
+     * @param list lista de clientes donde buscar
+     * @param animal animal del cual se quiere buscar el dueño en la lista
+     * @return posicion del dueño del animal en la lista
+     */
     private int getWhereCliente(List<Cliente> list, Animal animal) {
         //porque llega aqui null?
         if (listarClientes != null) {
@@ -334,7 +347,9 @@ public class AnimalesModificar extends javax.swing.JDialog {
         }
         return -1;
     }
-
+    /**
+     * Acutaliza la informacion de la pantalla en base al animal seleccionado
+     */
     private void actualizarDatos() {
         if (jComboBoxAnimales.getSelectedIndex() != -1) {
             Animal animal = listarAnimales.get(jComboBoxAnimales.getSelectedIndex());
@@ -349,7 +364,9 @@ public class AnimalesModificar extends javax.swing.JDialog {
             } else {
                 lblImagen.setIcon(new ImageIcon(new byte[0]));
             }
+            //Relleno el cliente
             jComboBoxCliente.setSelectedIndex(getWhereCliente(listarClientes, animal));
+            //Relleno las informacion
             txtRaza.setText(animal.getTipoAnimal());
             jTextAreaCaracteristicas.setText(animal.getCaracteristicas());
 

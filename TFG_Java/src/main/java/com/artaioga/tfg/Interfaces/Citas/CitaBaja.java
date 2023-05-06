@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
-import javax.swing.JTable;
 
 /**
  *
@@ -44,7 +43,7 @@ public class CitaBaja extends javax.swing.JDialog {
 
         jLabel1 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        jButtonBaja = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -53,10 +52,10 @@ public class CitaBaja extends javax.swing.JDialog {
         jComboBox1.setMinimumSize(new java.awt.Dimension(300, 22));
         jComboBox1.setPreferredSize(new java.awt.Dimension(300, 22));
 
-        jButton1.setText("Borrar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonBaja.setText("Borrar");
+        jButtonBaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonBajaActionPerformed(evt);
             }
         });
 
@@ -72,7 +71,7 @@ public class CitaBaja extends javax.swing.JDialog {
                     .addGap(5, 5, 5)
                     .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGap(5, 5, 5)
-                    .addComponent(jButton1)
+                    .addComponent(jButtonBaja)
                     .addGap(40, 40, 40)))
         );
         layout.setVerticalGroup(
@@ -86,29 +85,33 @@ public class CitaBaja extends javax.swing.JDialog {
                             .addGap(3, 3, 3)
                             .addComponent(jLabel1))
                         .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton1))
+                        .addComponent(jButtonBaja))
                     .addGap(0, 29, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonBajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBajaActionPerformed
         int id_cita;
-        if((id_cita=jComboBox1.getSelectedIndex())==-1){
+        //Compruebo que hay una cita selecionada
+        if ((id_cita = jComboBox1.getSelectedIndex()) == -1) {
             JOptionPane.showMessageDialog(this, "No hay cita seleccionada");
             return;
         }
+        //La pillo de la lista
         Cita citaModificar = listaCitas.get(id_cita);
+        //La elimino de la bbdd
         try {
             Connection conexion = ConexionBD.getInstancia().getConexion();
             CitasDAO citasDao = new CitasDAO(conexion);
             citasDao.eliminarCita(citaModificar.getIdCita());
+            //Acualizo el combo para que los cambios se vean reflejados
             cargarComboCitas();
         } catch (SQLException e) {
             System.out.println(e);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonBajaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -154,12 +157,17 @@ public class CitaBaja extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonBaja;
     private javax.swing.JComboBox<Cita> jComboBox1;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
-   DefaultComboBoxModel<Cita> model = new DefaultComboBoxModel<>();
-  List<Cita> listaCitas;
+    //Modelo de combo
+    DefaultComboBoxModel<Cita> model = new DefaultComboBoxModel<>();
+    //Listas
+    List<Cita> listaCitas;
+    /**
+     * Carga los datos correspondientes en el combo de citas
+     */
     private void cargarComboCitas() {
         model.removeAllElements();
         try {

@@ -167,16 +167,17 @@ public class AnimalesAlta extends javax.swing.JDialog {
         FTPController ftpController = new FTPController();
         Cliente cliente = listarCliente.get(jComboBoxClientes.getSelectedIndex());
         UUID uuid = UUID.randomUUID();
-        if(jTextAreaCaracterisitcas.getText().isBlank()||jTextRaza.getText().isBlank()){
-            JOptionPane.showMessageDialog(this, "Los campos no pueden estar vacios");
+        //compruebo que ciertos campos no estan vacios 
+        if(jTextRaza.getText().isBlank()){
+            JOptionPane.showMessageDialog(this, "La raza no puede estar vacia");
             return;
         }
-        
+        //Animal base (pattern builder)
         Animal animal = new Animal()
                 .setCaracteristicas(jTextAreaCaracterisitcas.getText())
                 .setIdCliente(cliente.getId_cliente())
                 .setTipoAnimal(jTextRaza.getText());
-
+        //Si la imagen es nula no necesito subirla
         if (imagenFile != null) {
             String extension = "";
             int i = imagenFile.getName().lastIndexOf('.');
@@ -186,7 +187,7 @@ public class AnimalesAlta extends javax.swing.JDialog {
             animal.setImagen(uuid.toString() + "." + extension);
             ftpController.uploadFile(imagenFile, uuid.toString() + "." + extension);
         }
-        
+        //Por ultimo subo los cambios a la bbdd y cierro la pestaña
         try {
             Connection conexion = ConexionBD.getInstancia().getConexion();
             AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
@@ -254,9 +255,13 @@ public class AnimalesAlta extends javax.swing.JDialog {
     private javax.swing.JLabel lblTitulo;
     // End of variables declaration//GEN-END:variables
     private File imagenFile;
+    //Lista de clientes
     private List<Cliente> listarCliente;
+    //Modelos ComboBox
     private DefaultComboBoxModel<String> modelCliente = new DefaultComboBoxModel<>();
-
+    /**
+     * Rellena el combo de clientes de la informacion correspondiente
+     */
     private void cargarComboClientes() {
         modelCliente.removeAllElements();
         try {

@@ -29,7 +29,7 @@ public class AnimalesBaja extends javax.swing.JDialog {
     public AnimalesBaja(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        jComboBox1.setModel(modelAnimal);
+        jComboBoxAnimales.setModel(modelAnimal);
         cargarComboAnimales();
     }
 
@@ -42,21 +42,21 @@ public class AnimalesBaja extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        jLabelAnimal = new javax.swing.JLabel();
+        jComboBoxAnimales = new javax.swing.JComboBox<>();
+        jButtonBaja = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jLabel1.setText("Animal");
+        jLabelAnimal.setText("Animal");
 
-        jComboBox1.setMinimumSize(new java.awt.Dimension(300, 22));
-        jComboBox1.setPreferredSize(new java.awt.Dimension(300, 22));
+        jComboBoxAnimales.setMinimumSize(new java.awt.Dimension(300, 22));
+        jComboBoxAnimales.setPreferredSize(new java.awt.Dimension(300, 22));
 
-        jButton1.setText("Baja");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonBaja.setText("Baja");
+        jButtonBaja.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonBajaActionPerformed(evt);
             }
         });
 
@@ -66,11 +66,11 @@ public class AnimalesBaja extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(jLabelAnimal)
                 .addGap(5, 5, 5)
-                .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jComboBoxAnimales, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(5, 5, 5)
-                .addComponent(jButton1)
+                .addComponent(jButtonBaja)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -80,22 +80,25 @@ public class AnimalesBaja extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(3, 3, 3)
-                        .addComponent(jLabel1))
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
+                        .addComponent(jLabelAnimal))
+                    .addComponent(jComboBoxAnimales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonBaja))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButtonBajaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonBajaActionPerformed
         int id_animal;
-        if((id_animal=jComboBox1.getSelectedIndex())==-1){
+        //Compruebo que hay  un animal seleccionado
+        if((id_animal=jComboBoxAnimales.getSelectedIndex())==-1){
             JOptionPane.showMessageDialog(this, "No hay animal seleccionado");
             return;
         }
+        //Pillo ese animal
         Animal animalBorrar = listarAnimales.get(id_animal);
+        //Lo doy de baja en la bbdd
         try {
             Connection conexion = ConexionBD.getInstancia().getConexion();
             AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
@@ -106,7 +109,7 @@ public class AnimalesBaja extends javax.swing.JDialog {
         } catch (SQLException e) {
             System.out.println(e);
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_jButtonBajaActionPerformed
 
     /**
      * @param args the command line arguments
@@ -151,12 +154,17 @@ public class AnimalesBaja extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton jButtonBaja;
+    private javax.swing.JComboBox<String> jComboBoxAnimales;
+    private javax.swing.JLabel jLabelAnimal;
     // End of variables declaration//GEN-END:variables
-     private List<Animal> listarAnimales;
+    //Lista de animales
+    private List<Animal> listarAnimales;
+    //Modelo ComboBox
     private DefaultComboBoxModel<String> modelAnimal = new DefaultComboBoxModel<>();
+    /**
+     * Rellena el combo de animales con la informacion correspondiente
+     */
     private void cargarComboAnimales() {
         modelAnimal.removeAllElements();
         try {

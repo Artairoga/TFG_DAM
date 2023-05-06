@@ -275,13 +275,18 @@ public class CitaModificar extends javax.swing.JDialog {
     private javax.swing.JTextField jTextFieldFecha;
     private javax.swing.JTextField jTextFieldHora;
     // End of variables declaration//GEN-END:variables
-private DefaultComboBoxModel<String> modelCitas = new DefaultComboBoxModel<>();
+    //Modelos de combos
+    private DefaultComboBoxModel<String> modelCitas = new DefaultComboBoxModel<>();
     private DefaultComboBoxModel<String> modelAnimal = new DefaultComboBoxModel<>();
     private DefaultComboBoxModel<String> modelCliente = new DefaultComboBoxModel<>();
+    //Modelos de citas
     private List<Cita> listaCitas;
     private List<Animal> listarAnimales;
     private List<Cliente> listarCliente;
 
+    /**
+     * Carga los datos correspondientes en el combo de citas
+     */
     private void cargarComboCitas() {
         modelCitas.removeAllElements();
         try {
@@ -297,6 +302,9 @@ private DefaultComboBoxModel<String> modelCitas = new DefaultComboBoxModel<>();
 
     }
 
+    /**
+     * Carga los datos correspondientes en el combo de animales
+     */
     private void cargarComboAnimales() {
         modelAnimal.removeAllElements();
         try {
@@ -312,6 +320,9 @@ private DefaultComboBoxModel<String> modelCitas = new DefaultComboBoxModel<>();
 
     }
 
+    /**
+     * Carga los datos correspondientes en el combo de clientes
+     */
     private void cargarComboClientes() {
         modelCliente.removeAllElements();
         try {
@@ -327,6 +338,9 @@ private DefaultComboBoxModel<String> modelCitas = new DefaultComboBoxModel<>();
 
     }
 
+    /**
+     * Carga la info a cerca de la cita seleccionada
+     */
     private void cargarInfo() {
         if (jComboBoxCitas.getSelectedIndex() != -1) {
             Cita citaSel = listaCitas.get(jComboBoxCitas.getSelectedIndex());
@@ -338,6 +352,14 @@ private DefaultComboBoxModel<String> modelCitas = new DefaultComboBoxModel<>();
         }
     }
 
+    /**
+     * Obtiene la posicion en la que se encuenta un animal dado una lista y una
+     * cita
+     *
+     * @param list lista de animales
+     * @param cita cita(contiene id_animal)
+     * @return posicion de la lista donde se encuentra
+     */
     private int getWhereAnimal(List<Animal> list, Cita cita) {
         //porque llega aqui null?
         if (listarAnimales != null) {
@@ -351,6 +373,14 @@ private DefaultComboBoxModel<String> modelCitas = new DefaultComboBoxModel<>();
         return -1;
     }
 
+    /**
+     * Obtiene la posicion en la que se encuentra cliente dado una lista y una
+     * cita
+     *
+     * @param list lista de clientes
+     * @param cita cita(contiene id_cliente)
+     * @return posicion donde se encuentra
+     */
     private int getWhereCliente(List<Cliente> list, Cita cita) {
         //porque llega aqui null?
         if (listarCliente != null) {
