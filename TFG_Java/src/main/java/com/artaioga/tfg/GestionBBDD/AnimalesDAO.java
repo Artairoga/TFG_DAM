@@ -71,6 +71,21 @@ public class AnimalesDAO {
             return filasInsertadas;
         }
     }
+    public int actualizarAnimal(Animal animal) throws SQLException {
+    String sql = "UPDATE animales SET id_cliente = ?, tipo_animal = ?, caracteristicas = ?, imagen = ? WHERE id_animal = ?";
+    try (PreparedStatement statement = conexion.prepareStatement(sql)) {
+        statement.setInt(1, animal.getIdCliente());
+        statement.setString(2, animal.getTipoAnimal());
+        statement.setString(3, animal.getCaracteristicas());
+        statement.setString(4, animal.getImagen());
+        statement.setInt(5, animal.getIdAnimal());
+        int filasActualizadas = statement.executeUpdate();
+        if (filasActualizadas == 0) {
+            throw new SQLException("No se ha actualizado ninguna fila en la base de datos");
+        }
+        return filasActualizadas;
+    }
+}
     public int eliminarAnimal(int idAnimal) throws SQLException {
         String sql = "DELETE FROM animales WHERE id_animal = ?";
         try (PreparedStatement statement = conexion.prepareStatement(sql)) {

@@ -9,7 +9,7 @@ import com.artaioga.tfg.GestionBBDD.ClientesDAO;
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
 import com.artaioga.tfg.Modelos.Animal;
 import com.artaioga.tfg.Modelos.Cliente;
-import com.artairoga.tfg.GestionFTP.FTPUploader;
+import com.artairoga.tfg.GestionFTP.FTPController;
 import java.awt.Image;
 import java.io.File;
 import java.sql.Connection;
@@ -164,7 +164,7 @@ public class AnimalesAlta extends javax.swing.JDialog {
     }//GEN-LAST:event_btnAñadirImagenActionPerformed
 
     private void btnAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAltaActionPerformed
-        FTPUploader uploader = new FTPUploader();
+        FTPController ftpController = new FTPController();
         Cliente cliente = listarCliente.get(jComboBoxClientes.getSelectedIndex());
         UUID uuid = UUID.randomUUID();
         if(jTextAreaCaracterisitcas.getText().isBlank()||jTextRaza.getText().isBlank()){
@@ -184,7 +184,7 @@ public class AnimalesAlta extends javax.swing.JDialog {
                 extension = imagenFile.getName().substring(i + 1);
             }
             animal.setImagen(uuid.toString() + "." + extension);
-            uploader.uploadFile(imagenFile, uuid.toString() + "." + extension);
+            ftpController.uploadFile(imagenFile, uuid.toString() + "." + extension);
         }
         
         try {

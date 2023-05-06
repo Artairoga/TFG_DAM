@@ -45,6 +45,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <exec.mainClass>com.artaioga.tfg.TFG</exec.mainClass>
+        <exec.mainClass>com.artaioga.tfg.Interfaces.Principal</exec.mainClass>
     </properties>
 </project>
