@@ -4,6 +4,17 @@
  */
 package com.artaioga.tfg.Interfaces.Animales;
 
+import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
+import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.Interfaces.Citas.CitaModificar;
+import com.artaioga.tfg.Modelos.Animal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author artai
@@ -16,6 +27,8 @@ public class AnimalesLista extends javax.swing.JDialog {
     public AnimalesLista(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        jListAnimales.setModel(modelAnimal);
+        cargarComboAnimales();
     }
 
     /**
@@ -28,17 +41,12 @@ public class AnimalesLista extends javax.swing.JDialog {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        jListAnimales = new javax.swing.JList<>();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(jListAnimales);
 
         jLabel1.setText("ListaAnimales");
 
@@ -112,7 +120,24 @@ public class AnimalesLista extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JList<String> jList1;
+    private javax.swing.JList<String> jListAnimales;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
+    private List<Animal> listaAnimales;
+    private DefaultListModel<String> modelAnimal = new DefaultListModel<>();
+
+    private void cargarComboAnimales() {
+        modelAnimal.removeAllElements();
+        try {
+            Connection conexion = ConexionBD.getInstancia().getConexion();
+            AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
+            listaAnimales = animalesDAO.listar();
+            for (Animal animal : listaAnimales) {
+                modelAnimal.addElement(animal.toString());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CitaModificar.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
 }

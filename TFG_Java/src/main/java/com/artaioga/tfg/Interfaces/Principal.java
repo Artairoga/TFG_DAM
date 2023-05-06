@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
@@ -338,16 +339,24 @@ public class Principal extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Principal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Principal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Principal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Principal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Principal.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -400,32 +409,32 @@ public class Principal extends javax.swing.JFrame {
     private Ajustes ajustes;
     //Tabla
     private DefaultTableModel tableModel;
-
     public void cargarTabla(JTable jTableCitas) {
         try {
             Connection conexion = ConexionBD.getInstancia().getConexion();
             CitasDAO citasDao = new CitasDAO(conexion);
-            AnimalesDAO animalesDao=new AnimalesDAO(conexion);
-            ClientesDAO clientesDao=new ClientesDAO(conexion);
+            AnimalesDAO animalesDao = new AnimalesDAO(conexion);
+            ClientesDAO clientesDao = new ClientesDAO(conexion);
             List<Cita> listaCitas = citasDao.listarCitas();
             Animal animal;
             Cliente cliente;
             for (Cita cita : listaCitas) {
-                animal=animalesDao.buscarAnimal(cita.getIdAnimal());
-                cliente=clientesDao.buscarCliente(cita.getIdCliente());
+                animal = animalesDao.buscarAnimal(cita.getIdAnimal());
+                cliente = clientesDao.buscarCliente(cita.getIdCliente());
                 Object[] fila = {
-                    cita.getFecha().toString()+"  -  "+cita.getHoraInicio().toString(), 
+                    cita.getFecha().toString() + "  -  " + cita.getHoraInicio().toString(),
                     animal.getTipoAnimal(),
-                    cliente.getDni(), 
+                    cliente.getDni(),
                     cita.getDescripcion(),
-                    cita.isPendiente()==true?"SI":"NO", 
-                    cita.getIdCita() 
+                    cita.isPendiente() == true ? "SI" : "NO",
+                    cita.getIdCita()
                 };
                 tableModel.addRow(fila);
+
             }
         } catch (SQLException ex) {
-            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Principal.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 }

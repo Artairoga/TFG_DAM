@@ -4,6 +4,19 @@
  */
 package com.artaioga.tfg.Interfaces.Animales;
 
+import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
+import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.Interfaces.Citas.CitaModificar;
+import com.artaioga.tfg.Modelos.Animal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author artai
@@ -16,6 +29,8 @@ public class AnimalesBaja extends javax.swing.JDialog {
     public AnimalesBaja(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        jComboBox1.setModel(modelAnimal);
+        cargarComboAnimales();
     }
 
     /**
@@ -35,11 +50,15 @@ public class AnimalesBaja extends javax.swing.JDialog {
 
         jLabel1.setText("Animal");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jComboBox1.setMinimumSize(new java.awt.Dimension(300, 22));
         jComboBox1.setPreferredSize(new java.awt.Dimension(300, 22));
 
         jButton1.setText("Baja");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -49,10 +68,10 @@ public class AnimalesBaja extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addGap(5, 5, 5)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(5, 5, 5)
                 .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -69,6 +88,25 @@ public class AnimalesBaja extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        int id_animal;
+        if((id_animal=jComboBox1.getSelectedIndex())==-1){
+            JOptionPane.showMessageDialog(this, "No hay animal seleccionado");
+            return;
+        }
+        Animal animalBorrar = listarAnimales.get(id_animal);
+        try {
+            Connection conexion = ConexionBD.getInstancia().getConexion();
+            AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
+            animalesDAO.eliminarAnimal(animalBorrar.getIdAnimal());
+            cargarComboAnimales();
+        }catch(SQLIntegrityConstraintViolationException sql){
+            JOptionPane.showMessageDialog(this, "Este animal contiene citas,no puede ser eliminado");
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -117,4 +155,20 @@ public class AnimalesBaja extends javax.swing.JDialog {
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
+     private List<Animal> listarAnimales;
+    private DefaultComboBoxModel<String> modelAnimal = new DefaultComboBoxModel<>();
+    private void cargarComboAnimales() {
+        modelAnimal.removeAllElements();
+        try {
+            Connection conexion = ConexionBD.getInstancia().getConexion();
+            AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
+            listarAnimales = animalesDAO.listar();
+            for (Animal animal : listarAnimales) {
+                modelAnimal.addElement(animal.toString());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CitaModificar.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
 }

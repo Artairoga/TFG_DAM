@@ -69,5 +69,11 @@ public class Animal {
         this.imagen = imagen;
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "Animal{" + "idAnimal=" + idAnimal + ", idCliente=" + idCliente + ", tipoAnimal=" + tipoAnimal + ", caracteristicas=" + caracteristicas + ", imagen=" + imagen + '}';
+    }
+    
 }
 
