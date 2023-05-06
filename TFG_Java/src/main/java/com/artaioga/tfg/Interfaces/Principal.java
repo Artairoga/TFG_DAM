@@ -68,7 +68,6 @@ public class Principal extends javax.swing.JFrame {
         jMenuItemClientesModificar = new javax.swing.JMenuItem();
         jMenuAyuda = new javax.swing.JMenu();
         jMenuItemAyuda = new javax.swing.JMenuItem();
-        jMenuItemConfiguracion = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -182,14 +181,6 @@ public class Principal extends javax.swing.JFrame {
         jMenuItemAyuda.setText("Ayuda");
         jMenuAyuda.add(jMenuItemAyuda);
 
-        jMenuItemConfiguracion.setText("Configuracion");
-        jMenuItemConfiguracion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItemConfiguracionActionPerformed(evt);
-            }
-        });
-        jMenuAyuda.add(jMenuItemConfiguracion);
-
         jMenuBar1.add(jMenuAyuda);
 
         setJMenuBar(jMenuBar1);
@@ -293,14 +284,6 @@ public class Principal extends javax.swing.JFrame {
         clientesModificar.setVisible(true);
     }//GEN-LAST:event_jMenuItemClientesModificarActionPerformed
 
-    private void jMenuItemConfiguracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemConfiguracionActionPerformed
-        if (ajustes != null) {
-            ajustes.dispose();
-        }
-        ajustes = new Ajustes(this, false);
-        ajustes.setVisible(true);
-    }//GEN-LAST:event_jMenuItemConfiguracionActionPerformed
-
     private void jButtonNuevaCitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNuevaCitaActionPerformed
         if (citaAlta != null) {
             citaAlta.dispose();
@@ -387,7 +370,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItemClientesBaja;
     private javax.swing.JMenuItem jMenuItemClientesLista;
     private javax.swing.JMenuItem jMenuItemClientesModificar;
-    private javax.swing.JMenuItem jMenuItemConfiguracion;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableCitas;
     // End of variables declaration//GEN-END:variables

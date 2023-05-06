@@ -167,17 +167,26 @@ public class AnimalesAlta extends javax.swing.JDialog {
         FTPUploader uploader = new FTPUploader();
         Cliente cliente = listarCliente.get(jComboBoxClientes.getSelectedIndex());
         UUID uuid = UUID.randomUUID();
-        String extension = "";
-        int i = imagenFile.getName().lastIndexOf('.');
-        if (i > 0) {
-            extension = imagenFile.getName().substring(i + 1);
+        if(jTextAreaCaracterisitcas.getText().isBlank()||jTextRaza.getText().isBlank()){
+            JOptionPane.showMessageDialog(this, "Los campos no pueden estar vacios");
+            return;
         }
+        
         Animal animal = new Animal()
                 .setCaracteristicas(jTextAreaCaracterisitcas.getText())
                 .setIdCliente(cliente.getId_cliente())
-                .setTipoAnimal(jTextRaza.getText())
-                .setImagen(uuid.toString() + "." + extension);
-        uploader.uploadFile(imagenFile, uuid.toString() + "." + extension);
+                .setTipoAnimal(jTextRaza.getText());
+
+        if (imagenFile != null) {
+            String extension = "";
+            int i = imagenFile.getName().lastIndexOf('.');
+            if (i > 0) {
+                extension = imagenFile.getName().substring(i + 1);
+            }
+            animal.setImagen(uuid.toString() + "." + extension);
+            uploader.uploadFile(imagenFile, uuid.toString() + "." + extension);
+        }
+        
         try {
             Connection conexion = ConexionBD.getInstancia().getConexion();
             AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
