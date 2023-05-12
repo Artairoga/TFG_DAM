@@ -3,6 +3,7 @@ import 'package:ante_proyecto/pages/detalles_cliente.dart';
 import 'package:flutter/material.dart';
 
 import '../modelos/modelos.dart';
+import '../providers/ip_provider.dart';
 
 class ListaClientes extends StatelessWidget {
   const ListaClientes({Key? key}) : super(key: key);
@@ -62,10 +63,11 @@ class _TileCliente extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String ip = connectionProvider.ip;
     return ListTile(
       leading: cliente.imagen != null
           ? CircleAvatar(
-              backgroundImage: NetworkImage(cliente.imagen!),
+              backgroundImage: NetworkImage('http://$ip/Images/${cliente.imagen!}'),
             )
           : const CircleAvatar(
               child: Icon(Icons.person),
@@ -122,31 +124,13 @@ class ClientSearch extends SearchDelegate {
         .where((cliente) =>
             cliente.nombreCompleto!.toLowerCase().contains(query.toLowerCase()))
         .toList();
-
+    String ip_servidor=connectionProvider.ip;
     return ListView.builder(
       itemCount: results.length,
       itemBuilder: (BuildContext context, int index) {
         Clientes cliente = results[index];
-        return ListTile(
-          leading: cliente.imagen != null
-              ? CircleAvatar(
-                  backgroundImage: NetworkImage(cliente.imagen!),
-                )
-              : const CircleAvatar(
-                  child: Icon(Icons.person),
-                ),
-          title: Text(cliente.nombreCompleto!),
-          subtitle: Text(cliente.dni!),
-          trailing: Icon(Icons.arrow_forward),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) {
-                      return DetalleCliente();
-                    },
-                    settings: RouteSettings(arguments: cliente!)));
-          },
+        return _TileCliente(
+          cliente: cliente,
         );
       },
     );
@@ -163,26 +147,8 @@ class ClientSearch extends SearchDelegate {
       itemCount: results.length,
       itemBuilder: (BuildContext context, int index) {
         Clientes cliente = results[index];
-        return ListTile(
-          leading: cliente.imagen != null
-              ? CircleAvatar(
-                  backgroundImage: NetworkImage(cliente.imagen!),
-                )
-              : const CircleAvatar(
-                  child: Icon(Icons.person),
-                ),
-          title: Text(cliente.nombreCompleto!),
-          subtitle: Text(cliente.dni!),
-          trailing: Icon(Icons.arrow_forward),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) {
-                      return DetalleCliente();
-                    },
-                    settings: RouteSettings(arguments: cliente!)));
-          },
+        return _TileCliente(
+          cliente: cliente,
         );
       },
     );

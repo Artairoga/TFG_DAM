@@ -13,7 +13,7 @@ class SolcitudesAnimales {
 
   Future<List<Animales>> listaAnimales() async {
     final url = Uri.parse(
-        'http://$ip:$port/api/v1/db/data/noco/p_z1cj1saiajqqvd/Animales/views/Animales');
+        'http://$ip:$port/api/v1/db/data/noco/p_n964z0esixbmcl/Animales/views/Animales');
     final headers = {'xc-token': apikey};
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200) {
@@ -28,7 +28,7 @@ class SolcitudesAnimales {
 
   Future<Animales> obtenerAnimal({required int idAnimal}) async {
     final url = Uri.parse(
-        'http://$ip:$port/api/v1/db/data/noco/p_z1cj1saiajqqvd/Animales/views/Animales?where=(IdAnimal,eq,$idAnimal)');
+        'http://$ip:$port/api/v1/db/data/noco/p_n964z0esixbmcl/Animales/views/Animales?where=(IdAnimal,eq,$idAnimal)');
     final headers = {'xc-token': apikey};
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200) {

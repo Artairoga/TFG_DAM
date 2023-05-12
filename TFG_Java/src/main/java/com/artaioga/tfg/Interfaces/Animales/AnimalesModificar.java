@@ -182,7 +182,7 @@ public class AnimalesModificar extends javax.swing.JDialog {
             Cliente cliente = listarClientes.get(id_combo_clientes);
             animalModificar
                     .setCaracteristicas(jTextAreaCaracteristicas.getText())
-                    .setTipoAnimal(txtRaza.getText())
+                    .setNombreAnimal(txtRaza.getText())
                     .setIdCliente(cliente.getId_cliente());
             //Gestiono la imagen solo la subo si la imagen actual es diferente de la de la bbdd
             if (imagenFile.getName() != animalModificar.getImagen()) {

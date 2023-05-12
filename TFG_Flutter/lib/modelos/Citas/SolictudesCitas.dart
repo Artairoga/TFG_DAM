@@ -12,7 +12,7 @@ class SolcitudesCitas {
   final port=connectionProvider.port;
   Future<List<Citas>> listaCitas() async {
     final url = Uri.parse(
-        'http://$ip:$port/api/v1/db/data/noco/p_z1cj1saiajqqvd/Citas/views/Citas');
+        'http://$ip:$port/api/v1/db/data/noco/p_n964z0esixbmcl/Citas/views/Citas');
     final headers = {'xc-token': apikey};
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200) {
@@ -26,7 +26,7 @@ class SolcitudesCitas {
 
   Future<Citas> obtenerCita({required int idCita}) async {
     final url = Uri.parse(
-        'http://$ip:$port/api/v1/db/data/noco/p_z1cj1saiajqqvd/Citas/views/Citas?where=(IdCita,eq,$idCita)');
+        'http://$ip:$port/api/v1/db/data/noco/p_n964z0esixbmcl/Citas/views/Citas?where=(IdCita,eq,$idCita)');
     final headers = {'xc-token': apikey};
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200) {
@@ -41,7 +41,7 @@ class SolcitudesCitas {
   }
   Future<List<Citas>> obtenerCitasPorClientes({required int idCliente}) async {
     final url = Uri.parse(
-        'http://$ip:$port/api/v1/db/data/noco/p_z1cj1saiajqqvd/Citas/views/Citas?where=(IdCliente,eq,$idCliente)');
+        'http://$ip:$port/api/v1/db/data/noco/p_n964z0esixbmcl/Citas/views/Citas?where=(IdCliente,eq,$idCliente)');
     final headers = {'xc-token': apikey};
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200) {
@@ -54,7 +54,7 @@ class SolcitudesCitas {
   }
   Future<List<Citas>> obtenerCitasPorAnimales({required int idAnimal}) async {
     final url = Uri.parse(
-        'http://$ip:$port/api/v1/db/data/noco/p_z1cj1saiajqqvd/Citas/views/Citas?where=(IdAnimal,eq,$idAnimal)');
+        'http://$ip:$port/api/v1/db/data/noco/p_n964z0esixbmcl/Citas/views/Citas?where=(IdAnimal,eq,$idAnimal)');
     final headers = {'xc-token': apikey};
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200) {

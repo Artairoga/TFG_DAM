@@ -1,4 +1,6 @@
+import 'package:ante_proyecto/providers/ip_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../modelos/Animales/SolictudesAnimales.dart';
 import '../modelos/modelos.dart';
@@ -63,15 +65,16 @@ class _AnimalTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String ip = connectionProvider.ip;
     return ListTile(
       leading: animal.imagen!=null
           ? CircleAvatar(
-              backgroundImage: NetworkImage(animal.imagen!),
+              backgroundImage: NetworkImage('http://$ip/Images/${animal.imagen!}'),
             )
           : const CircleAvatar(
               child: Icon(Icons.pets),
             ),
-      title: Text(animal.tipoAnimal!),
+      title: Text(animal.nombreAnimal!),
       subtitle: Text(animal.caracteristicas!),
       trailing: Icon(Icons.arrow_forward),
       onTap: () {
@@ -121,34 +124,14 @@ class AnimalSearch extends SearchDelegate {
   Widget buildResults(BuildContext context) {
     List<Animales> results = animales
         .where((animal) =>
-            animal.tipoAnimal!.toLowerCase().contains(query.toLowerCase()))
+            animal.nombreAnimal!.toLowerCase().contains(query.toLowerCase()))
         .toList();
 
     return ListView.builder(
       itemCount: results.length,
       itemBuilder: (BuildContext context, int index) {
         Animales animal = results[index];
-        return ListTile(
-          leading: animal.imagen!=null
-              ? CircleAvatar(
-                  backgroundImage: NetworkImage(animal.imagen!),
-                )
-              : const CircleAvatar(
-                  child: Icon(Icons.pets),
-                ),
-          title: Text(animal.tipoAnimal!),
-          subtitle: Text(animal.caracteristicas!),
-          trailing: Icon(Icons.arrow_forward),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) {
-                      return AnimalPage();
-                    },
-                    settings: RouteSettings(arguments: animal)));
-          },
-        );
+        return _AnimalTile(animal: animal);
       },
     );
   }
@@ -157,34 +140,14 @@ class AnimalSearch extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     List<Animales> results = animales
         .where((animal) =>
-            animal.tipoAnimal!.toLowerCase().contains(query.toLowerCase()))
+            animal.nombreAnimal!.toLowerCase().contains(query.toLowerCase()))
         .toList();
 
     return ListView.builder(
       itemCount: results.length,
       itemBuilder: (BuildContext context, int index) {
         Animales animal = results[index];
-        return ListTile(
-          leading: animal.imagen!=null
-              ? CircleAvatar(
-                  backgroundImage: NetworkImage(animal.imagen!),
-                )
-              : const CircleAvatar(
-                  child: Icon(Icons.pets),
-                ),
-          title: Text(animal.tipoAnimal!),
-          subtitle: Text(animal.caracteristicas!),
-          trailing: Icon(Icons.arrow_forward),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) {
-                      return AnimalPage();
-                    },
-                    settings: RouteSettings(arguments: animal)));
-          },
-        );
+        return _AnimalTile(animal: animal);
       },
     );
   }

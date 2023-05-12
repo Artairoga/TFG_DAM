@@ -176,7 +176,7 @@ public class AnimalesAlta extends javax.swing.JDialog {
         Animal animal = new Animal()
                 .setCaracteristicas(jTextAreaCaracterisitcas.getText())
                 .setIdCliente(cliente.getId_cliente())
-                .setTipoAnimal(jTextRaza.getText());
+                .setNombreAnimal(jTextRaza.getText());
         //Si la imagen es nula no necesito subirla
         if (imagenFile != null) {
             String extension = "";

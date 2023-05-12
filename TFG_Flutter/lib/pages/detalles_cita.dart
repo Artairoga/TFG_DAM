@@ -104,7 +104,7 @@ class _InfoAnimal extends StatelessWidget {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(
-                '${animal.tipoAnimal}',
+                '${animal.nombreAnimal}',
                 style: TextStyle(fontSize: 18),
               )
             ],

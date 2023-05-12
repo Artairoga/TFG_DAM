@@ -25,7 +25,7 @@ public class AnimalesDAOTest {
         animalesDAO = new AnimalesDAO(conexion);
         animal = new Animal()
                 .setIdCliente(1)
-                .setTipoAnimal("Perro")
+                .setNombreAnimal("Perro")
                 .setCaracteristicas("Labrador")
                 .setImagen("imagen.jpg");
     }

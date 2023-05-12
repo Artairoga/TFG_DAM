@@ -4,9 +4,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 ConnectionProvider connectionProvider = ConnectionProvider._();
 class ConnectionProvider extends ChangeNotifier {
-  String _ip = '192.168.102.253';
-  String _port = '8090';
-  String _apiKey = '__ZoB_khecUj4pVOKcJKB4FJ91L1Ec-_etLpA4mH';
+  String _ip = '192.168.255.253';
+  String _port = '8080';
+  String _apiKey = 'MhujWxX-5tt850czf_4kM5oR1M_hohMQfP3M38rr';
 
   int _ConnectionCode = 200;
   SharedPreferences? prefs = null;
@@ -51,7 +51,6 @@ class ConnectionProvider extends ChangeNotifier {
     await _initPreferences();
     _ip = prefs!.getString('ip') ?? _ip;
     _port = prefs!.getString('port') ?? _port;
-    _apiKey = prefs!.getString('apiKey') ?? _apiKey;
     await checkConnection();
     notifyListeners();
   }
@@ -61,7 +60,6 @@ class ConnectionProvider extends ChangeNotifier {
     await _initPreferences();
     await prefs!.setString('ip', _ip);
     await prefs!.setString('port', _port);
-    await prefs!.setString('apiKey', _apiKey);
   }
 
   //inicializa las preferencias

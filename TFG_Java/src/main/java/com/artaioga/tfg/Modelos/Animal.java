@@ -11,16 +11,16 @@ package com.artaioga.tfg.Modelos;
 public class Animal {
     private int idAnimal;
     private int idCliente;
-    private String tipoAnimal;
+    private String nombreAnimal;
     private String caracteristicas;
     private String imagen;
 
     public Animal() {}
 
-    public Animal(int idAnimal, int idCliente, String tipoAnimal, String caracteristicas, String imagen) {
+    public Animal(int idAnimal, int idCliente, String nombreAnimal, String caracteristicas, String imagen) {
         this.idAnimal = idAnimal;
         this.idCliente = idCliente;
-        this.tipoAnimal = tipoAnimal;
+        this.nombreAnimal = nombreAnimal;
         this.caracteristicas = caracteristicas;
         this.imagen = imagen;
     }
@@ -44,11 +44,11 @@ public class Animal {
     }
 
     public String getTipoAnimal() {
-        return tipoAnimal;
+        return nombreAnimal;
     }
 
-    public Animal setTipoAnimal(String tipoAnimal) {
-        this.tipoAnimal = tipoAnimal;
+    public Animal setNombreAnimal(String nombreAnimal) {
+        this.nombreAnimal = nombreAnimal;
         return this;
     }
 
@@ -72,7 +72,7 @@ public class Animal {
 
     @Override
     public String toString() {
-        return "Animal{" + "idAnimal=" + idAnimal + ", idCliente=" + idCliente + ", tipoAnimal=" + tipoAnimal + ", caracteristicas=" + caracteristicas + ", imagen=" + imagen + '}';
+        return "Animal{" + "idAnimal=" + idAnimal + ", idCliente=" + idCliente + ", nombreAnimal=" + nombreAnimal + ", caracteristicas=" + caracteristicas + ", imagen=" + imagen + '}';
     }
     
 }

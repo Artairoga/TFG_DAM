@@ -22,7 +22,7 @@ public class AnimalesDAO {
                 Animal animal = new Animal()
                 .setIdAnimal(resultSet.getInt("id_animal"))
                 .setIdCliente(resultSet.getInt("id_cliente"))
-                .setTipoAnimal(resultSet.getString("tipo_animal"))
+                .setNombreAnimal(resultSet.getString("nombre_animal"))
                 .setCaracteristicas(resultSet.getString("caracteristicas"))
                 .setImagen(resultSet.getString("imagen"));
                 listaAnimales.add(animal);
@@ -41,7 +41,7 @@ public class AnimalesDAO {
                     animal = new Animal()
                             .setIdAnimal(resultSet.getInt("id_animal"))
                             .setIdCliente(resultSet.getInt("id_cliente"))
-                            .setTipoAnimal(resultSet.getString("tipo_animal"))
+                            .setNombreAnimal(resultSet.getString("nombre_animal"))
                             .setCaracteristicas(resultSet.getString("caracteristicas"))
                             .setImagen(resultSet.getString("imagen"));
                 }
@@ -50,7 +50,7 @@ public class AnimalesDAO {
         return animal;
     }
     public int insertarAnimal(Animal animal) throws SQLException {
-        String sql = "INSERT INTO animales (id_cliente, tipo_animal, caracteristicas, imagen) " +
+        String sql = "INSERT INTO animales (id_cliente, nombre_animal, caracteristicas, imagen) " +
                 "VALUES (?, ?, ?, ?)";
         try (PreparedStatement statement = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             statement.setInt(1, animal.getIdCliente());
@@ -72,7 +72,7 @@ public class AnimalesDAO {
         }
     }
     public int actualizarAnimal(Animal animal) throws SQLException {
-    String sql = "UPDATE animales SET id_cliente = ?, tipo_animal = ?, caracteristicas = ?, imagen = ? WHERE id_animal = ?";
+    String sql = "UPDATE animales SET id_cliente = ?, nombre_animal = ?, caracteristicas = ?, imagen = ? WHERE id_animal = ?";
     try (PreparedStatement statement = conexion.prepareStatement(sql)) {
         statement.setInt(1, animal.getIdCliente());
         statement.setString(2, animal.getTipoAnimal());

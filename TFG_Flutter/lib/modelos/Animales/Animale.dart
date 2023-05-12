@@ -1,7 +1,7 @@
 class Animales {
   Animales({
     this.idAnimal,
-    this.tipoAnimal,
+    this.nombreAnimal,
     this.caracteristicas,
     this.imagen,
     this.id_clientes,
@@ -9,7 +9,7 @@ class Animales {
   });
 
   int? idAnimal;
-  String? tipoAnimal;
+  String? nombreAnimal;
   String? caracteristicas;
   String? imagen;
   int? id_clientes;
@@ -17,7 +17,7 @@ class Animales {
 
   factory Animales.fromJson(Map<String, dynamic> json) => Animales(
         idAnimal: json["IdAnimal"],
-        tipoAnimal: json["TipoAnimal"],
+    nombreAnimal: json["NombreAnimal"],
         caracteristicas: json["Caracteristicas"],
         imagen: json["Imagen"],
         id_clientes: json["Clientes"]["IdCliente"],
@@ -27,6 +27,6 @@ class Animales {
 
   @override
   String toString() {
-    return 'Animales{idAnimal: $idAnimal, tipoAnimal: $tipoAnimal, caracteristicas: $caracteristicas, imagen: $imagen, id_clientes: $id_clientes, list_id_citas: $list_id_citas}';
+    return 'Animales{idAnimal: $idAnimal, tipoAnimal: $nombreAnimal, caracteristicas: $caracteristicas, imagen: $imagen, id_clientes: $id_clientes, list_id_citas: $list_id_citas}';
   }
 }

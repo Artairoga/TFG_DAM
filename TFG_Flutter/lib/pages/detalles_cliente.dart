@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../modelos/modelos.dart';
+import '../providers/ip_provider.dart';
 
 class DetalleCliente extends StatelessWidget {
   const DetalleCliente({Key? key}) : super(key: key);
@@ -40,16 +41,7 @@ class _InfoCliente extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: double.infinity,
-          height: 200,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: NetworkImage("https://picsum.photos/200"),
-            ),
-          ),
-        ),
+        ImagenCliente(),
         SizedBox(height: 16.0),
         Text(
           'Nombre completo:',
@@ -81,6 +73,37 @@ class _InfoCliente extends StatelessWidget {
       ],
     );
   }
+  Container ImagenCliente(){
+    String ip=connectionProvider.ip;
+    if(cliente.imagen==null){
+      return Container(
+        width: double.infinity,
+        height: 200,
+        color: Colors.grey[200], // Color de fondo gris claro
+        child: Center(
+          child: Text(
+            'No Image',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      );
+    }else{
+      return Container(
+        width: double.infinity,
+        height: 200,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: NetworkImage('http://$ip/Images/${cliente.imagen!}'),
+          ),
+        ),
+      );
+    }
+  }
+
 }
 
 class _InfoCitas extends StatelessWidget {

@@ -1,3 +1,4 @@
+import 'package:ante_proyecto/providers/ip_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -12,7 +13,7 @@ class AnimalPage extends StatelessWidget {
     var animal = ModalRoute.of(context)!.settings.arguments as Animales;
     return Scaffold(
       appBar: AppBar(
-        title: Text(animal.tipoAnimal!),
+        title: Text(animal.nombreAnimal!),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -38,16 +39,7 @@ class _InfoAnimal extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          width: double.infinity,
-          height: 200,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.cover,
-              image: NetworkImage("https://picsum.photos/id/237/200/300/"),
-            ),
-          ),
-        ),
+        ImagenAnimal(),
         SizedBox(height: 16),
         Text(
           'Características:',
@@ -81,6 +73,36 @@ class _InfoAnimal extends StatelessWidget {
         SizedBox(height: 16),
       ],
     );
+  }
+  Container ImagenAnimal(){
+    String ip=connectionProvider.ip;
+    if(animal.imagen==null){
+      return Container(
+        width: double.infinity,
+        height: 200,
+        color: Colors.grey[200], // Color de fondo gris claro
+        child: Center(
+          child: Text(
+            'No Image',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      );
+    }else{
+      return Container(
+        width: double.infinity,
+        height: 200,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: NetworkImage('http://$ip/Images/${animal.imagen!}'),
+          ),
+        ),
+      );
+    }
   }
 }
 

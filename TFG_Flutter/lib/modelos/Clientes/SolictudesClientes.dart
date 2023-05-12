@@ -13,7 +13,7 @@ class SolcitudesClientes {
   final port = connectionProvider.port;
   Future<List<Clientes>> listaClientes() async {
     final url = Uri.parse(
-        'http://$ip:$port/api/v1/db/data/noco/p_z1cj1saiajqqvd/Clientes/views/Clientes');
+        'http://$ip:$port/api/v1/db/data/noco/p_n964z0esixbmcl/Clientes/views/Clientes');
     final headers = {'xc-token': apikey};
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200) {
@@ -28,7 +28,7 @@ class SolcitudesClientes {
 
   Future<Clientes> obtenerCliente({required int idCliente}) async {
     final url = Uri.parse(
-        'http://$ip:$port/api/v1/db/data/noco/p_z1cj1saiajqqvd/Clientes/views/Clientes?where=(IdCliente,eq,$idCliente)');
+        'http://$ip:$port/api/v1/db/data/noco/p_n964z0esixbmcl/Clientes/views/Clientes?where=(IdCliente,eq,$idCliente)');
     final headers = {'xc-token': apikey};
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200) {
