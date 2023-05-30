@@ -34,9 +34,9 @@
                       </Group>
                       <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txtTitulo" min="-2" pref="179" max="-2" attributes="0"/>
-                          <Component id="txtDuracion" min="-2" pref="179" max="-2" attributes="0"/>
-                          <Component id="txtFechaDeLanzamiento" min="-2" pref="179" max="-2" attributes="0"/>
+                          <Component id="txtNombre" min="-2" pref="179" max="-2" attributes="0"/>
+                          <Component id="txtDNI" min="-2" pref="179" max="-2" attributes="0"/>
+                          <Component id="txtTelefono" min="-2" pref="179" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="15" pref="15" max="-2" attributes="0"/>
                       <Component id="lblImagen" min="-2" pref="124" max="-2" attributes="0"/>
@@ -66,11 +66,11 @@
                       <Component id="lblFechaDeLanzamiento" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="txtTitulo" min="-2" max="-2" attributes="0"/>
+                      <Component id="txtNombre" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="3" pref="3" max="-2" attributes="0"/>
-                      <Component id="txtDuracion" min="-2" max="-2" attributes="0"/>
+                      <Component id="txtDNI" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
-                      <Component id="txtFechaDeLanzamiento" min="-2" max="-2" attributes="0"/>
+                      <Component id="txtTelefono" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="lblImagen" min="-2" pref="119" max="-2" attributes="0"/>
               </Group>
@@ -100,11 +100,11 @@
         <Property name="text" type="java.lang.String" value="Telefono"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="txtTitulo">
+    <Component class="javax.swing.JTextField" name="txtNombre">
     </Component>
-    <Component class="javax.swing.JTextField" name="txtDuracion">
+    <Component class="javax.swing.JTextField" name="txtDNI">
     </Component>
-    <Component class="javax.swing.JTextField" name="txtFechaDeLanzamiento">
+    <Component class="javax.swing.JTextField" name="txtTelefono">
     </Component>
     <Component class="javax.swing.JLabel" name="lblImagen">
       <Properties>

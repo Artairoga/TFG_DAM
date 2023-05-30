@@ -175,6 +175,7 @@ public class AnimalesModificar extends javax.swing.JDialog {
         int id_combo_clientes = jComboBoxCliente.getSelectedIndex();
         Connection conexion = ConexionBD.getInstancia().getConexion();
         AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
+        String uuidImagenAntigua;
         //Compruebo que hay un animal seleccionado
         if (id_combo_animales != -1) {
             //Gestiono el animal base
@@ -187,6 +188,7 @@ public class AnimalesModificar extends javax.swing.JDialog {
             //Gestiono la imagen solo la subo si la imagen actual es diferente de la de la bbdd
             if (imagenFile.getName() != animalModificar.getImagen()) {
                 if (imagenFile != null) {
+                    uuidImagenAntigua = animalModificar.getImagen();
                     UUID uuid = UUID.randomUUID();
                     FTPController ftpController = new FTPController();
                     String extension = "";
@@ -194,12 +196,16 @@ public class AnimalesModificar extends javax.swing.JDialog {
                     if (i > 0) {
                         extension = imagenFile.getName().substring(i + 1);
                     }
-                    animalModificar.setImagen(uuid.toString() + "." + extension);
+                    //primero la subo,luego se la doy, de forma que si falla la subida no se modifica la imagen
                     ftpController.uploadFile(imagenFile, uuid.toString() + "." + extension);
+                    animalModificar.setImagen(uuid.toString() + "." + extension);
+                    //por ultimo borro la imagen antigua
+                    ftpController.deleteFile(uuidImagenAntigua);
                 }
             }
             //Por ultimo subo los cambios a la base de datos
             try {
+
                 animalesDAO.actualizarAnimal(animalModificar);
                 JOptionPane.showMessageDialog(this, "Animal modificado correctamente");
                 this.dispose();

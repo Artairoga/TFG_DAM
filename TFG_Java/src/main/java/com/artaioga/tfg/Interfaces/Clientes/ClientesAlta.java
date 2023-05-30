@@ -4,11 +4,24 @@
  */
 package com.artaioga.tfg.Interfaces.Clientes;
 
+import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
+import com.artaioga.tfg.GestionBBDD.ClientesDAO;
+import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.Interfaces.Animales.AnimalesAlta;
+import com.artaioga.tfg.Modelos.Animal;
+import com.artaioga.tfg.Modelos.Cliente;
+import com.artairoga.tfg.GestionFTP.FTPController;
 import java.awt.Image;
 import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -36,9 +49,9 @@ public class ClientesAlta extends javax.swing.JDialog {
         lblTitulo = new javax.swing.JLabel();
         lblDuracion = new javax.swing.JLabel();
         lblFechaDeLanzamiento = new javax.swing.JLabel();
-        txtTitulo = new javax.swing.JTextField();
-        txtDuracion = new javax.swing.JTextField();
-        txtFechaDeLanzamiento = new javax.swing.JTextField();
+        txtNombre = new javax.swing.JTextField();
+        txtDNI = new javax.swing.JTextField();
+        txtTelefono = new javax.swing.JTextField();
         lblImagen = new javax.swing.JLabel();
         btnAñadirImagen = new javax.swing.JButton();
         btnAlta = new javax.swing.JButton();
@@ -82,9 +95,9 @@ public class ClientesAlta extends javax.swing.JDialog {
                             .addComponent(lblFechaDeLanzamiento, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(6, 6, 6)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtFechaDeLanzamiento, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtDNI, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(15, 15, 15)
                         .addComponent(lblImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -107,11 +120,11 @@ public class ClientesAlta extends javax.swing.JDialog {
                         .addGap(12, 12, 12)
                         .addComponent(lblFechaDeLanzamiento))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(3, 3, 3)
-                        .addComponent(txtDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtDNI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)
-                        .addComponent(txtFechaDeLanzamiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -142,7 +155,38 @@ public class ClientesAlta extends javax.swing.JDialog {
     }//GEN-LAST:event_btnAñadirImagenActionPerformed
 
     private void btnAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAltaActionPerformed
-
+        FTPController ftpController = new FTPController();
+        UUID uuid = UUID.randomUUID();
+        //compruebo que ciertos campos no estan vacios 
+        if (txtDNI.getText().isBlank() || txtNombre.getText().isBlank() || txtTelefono.getText().isBlank()) {
+            JOptionPane.showMessageDialog(this, "Los campos no pueden estar vacios");
+            return;
+        }
+        //Cliente base (pattern builder)
+        Cliente cliente = new Cliente()
+                .setDni(txtDNI.getText())
+                .setNombre_completo(txtNombre.getText())
+                .setTelefono(txtTelefono.getText());
+        //Si la imagen es nula no necesito subirla
+        if (imagenFile != null) {
+            String extension = "";
+            int i = imagenFile.getName().lastIndexOf('.');
+            if (i > 0) {
+                extension = imagenFile.getName().substring(i + 1);
+            }
+            cliente.setImagen(uuid.toString() + "." + extension);
+            ftpController.uploadFile(imagenFile, uuid.toString() + "." + extension);
+        }
+        //Por ultimo subo los cambios a la bbdd y cierro la pestaña
+        try {
+            Connection conexion = ConexionBD.getInstancia().getConexion();
+            ClientesDAO clientesDAO = new ClientesDAO(conexion);
+            clientesDAO.insertarCliente(cliente);
+            JOptionPane.showMessageDialog(this, "Alta correcta!");
+            this.dispose();
+        } catch (SQLException ex) {
+            Logger.getLogger(AnimalesAlta.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnAltaActionPerformed
 
     /**
@@ -194,9 +238,9 @@ public class ClientesAlta extends javax.swing.JDialog {
     private javax.swing.JLabel lblFechaDeLanzamiento;
     private javax.swing.JLabel lblImagen;
     private javax.swing.JLabel lblTitulo;
-    private javax.swing.JTextField txtDuracion;
-    private javax.swing.JTextField txtFechaDeLanzamiento;
-    private javax.swing.JTextField txtTitulo;
+    private javax.swing.JTextField txtDNI;
+    private javax.swing.JTextField txtNombre;
+    private javax.swing.JTextField txtTelefono;
     // End of variables declaration//GEN-END:variables
     private File imagenFile;
 }

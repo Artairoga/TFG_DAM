@@ -4,6 +4,21 @@
  */
 package com.artaioga.tfg.Interfaces.Clientes;
 
+import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
+import com.artaioga.tfg.GestionBBDD.ClientesDAO;
+import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.Interfaces.Animales.AnimalesAlta;
+import com.artaioga.tfg.Modelos.Animal;
+import com.artaioga.tfg.Modelos.Cliente;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author artai
@@ -16,6 +31,8 @@ public class ClientesBaja extends javax.swing.JDialog {
     public ClientesBaja(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        jComboBoxClientes.setModel(modelCliente);
+        cargarComboClientes();
     }
 
     /**
@@ -27,17 +44,21 @@ public class ClientesBaja extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBoxClientes = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        jComboBox1.setMinimumSize(new java.awt.Dimension(300, 22));
-        jComboBox1.setPreferredSize(new java.awt.Dimension(300, 22));
+        jComboBoxClientes.setMinimumSize(new java.awt.Dimension(300, 22));
+        jComboBoxClientes.setPreferredSize(new java.awt.Dimension(300, 22));
 
         jButton1.setText("Baja");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Clientes");
 
@@ -51,7 +72,7 @@ public class ClientesBaja extends javax.swing.JDialog {
                     .addGap(0, 51, Short.MAX_VALUE)
                     .addComponent(jLabel1)
                     .addGap(5, 5, 5)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBoxClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGap(5, 5, 5)
                     .addComponent(jButton1)
                     .addGap(0, 52, Short.MAX_VALUE)))
@@ -66,13 +87,35 @@ public class ClientesBaja extends javax.swing.JDialog {
                         .addGroup(layout.createSequentialGroup()
                             .addGap(3, 3, 3)
                             .addComponent(jLabel1))
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jComboBoxClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jButton1))
                     .addGap(0, 14, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        int id_cliente;
+        //Compruebo que hay  un cliente seleccionado
+        if ((id_cliente = jComboBoxClientes.getSelectedIndex()) == -1) {
+            JOptionPane.showMessageDialog(this, "No hay cliente seleccionado");
+            return;
+        }
+        //Pillo ese cliente
+        Cliente clienteBorrar = listaClientes.get(id_cliente);
+        //Lo doy de baja en la bbdd
+        try {
+            Connection conexion = ConexionBD.getInstancia().getConexion();
+            AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
+            animalesDAO.eliminarAnimal(clienteBorrar.getId_cliente());
+            cargarComboClientes();
+        } catch (SQLIntegrityConstraintViolationException sql) {
+            JOptionPane.showMessageDialog(this, "Este cliente contiene citas,no puede ser eliminado");
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -118,7 +161,25 @@ public class ClientesBaja extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBoxClientes;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
+    //lista de animales
+    private List<Cliente> listaClientes;
+    //Modelo ComboBox
+    private DefaultComboBoxModel<String> modelCliente = new DefaultComboBoxModel<>();
+     private void cargarComboClientes() {
+        modelCliente.removeAllElements();
+        try {
+            Connection conexion = ConexionBD.getInstancia().getConexion();
+            ClientesDAO clientesDAO = new ClientesDAO(conexion);
+            listaClientes = clientesDAO.listarClientes();
+            for (Cliente cliente : listaClientes) {
+                modelCliente.addElement(String.valueOf(cliente.getDni()));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AnimalesAlta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
 }

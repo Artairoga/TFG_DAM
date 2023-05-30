@@ -4,11 +4,28 @@
  */
 package com.artaioga.tfg.Interfaces.Clientes;
 
+import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
+import com.artaioga.tfg.GestionBBDD.ClientesDAO;
+import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.Interfaces.Animales.AnimalesAlta;
+import com.artaioga.tfg.Interfaces.Animales.AnimalesModificar;
+import com.artaioga.tfg.Modelos.Animal;
+import com.artaioga.tfg.Modelos.Cliente;
+import com.artairoga.tfg.GestionFTP.FTPController;
 import java.awt.Image;
 import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -22,6 +39,8 @@ public class ClientesModificar extends javax.swing.JDialog {
     public ClientesModificar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        jComboBoxCliente.setModel(modelCliente);
+        cargarComboClientes();
     }
 
     /**
@@ -34,15 +53,15 @@ public class ClientesModificar extends javax.swing.JDialog {
     private void initComponents() {
 
         btnAñadirImagen2 = new javax.swing.JButton();
-        btnAlta = new javax.swing.JButton();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        btnModificar = new javax.swing.JButton();
+        jComboBoxCliente = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
         lblTitulo = new javax.swing.JLabel();
         lblDuracion = new javax.swing.JLabel();
         lblFechaDeLanzamiento = new javax.swing.JLabel();
-        txtTitulo = new javax.swing.JTextField();
-        txtDuracion = new javax.swing.JTextField();
-        txtFechaDeLanzamiento = new javax.swing.JTextField();
+        txtNombreCompleto = new javax.swing.JTextField();
+        txtDNI = new javax.swing.JTextField();
+        txtTelefono = new javax.swing.JTextField();
         lblImagen = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -54,10 +73,16 @@ public class ClientesModificar extends javax.swing.JDialog {
             }
         });
 
-        btnAlta.setText("Modificar");
-        btnAlta.addActionListener(new java.awt.event.ActionListener() {
+        btnModificar.setText("Modificar");
+        btnModificar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAltaActionPerformed(evt);
+                btnModificarActionPerformed(evt);
+            }
+        });
+
+        jComboBoxCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBoxClienteActionPerformed(evt);
             }
         });
 
@@ -88,17 +113,17 @@ public class ClientesModificar extends javax.swing.JDialog {
                                 .addComponent(lblFechaDeLanzamiento, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGap(6, 6, 6)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtFechaDeLanzamiento, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtNombreCompleto, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtDNI, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGap(15, 15, 15)
                             .addComponent(lblImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(layout.createSequentialGroup()
                             .addGap(132, 132, 132)
-                            .addComponent(btnAlta)
+                            .addComponent(btnModificar)
                             .addGap(143, 143, 143)
                             .addComponent(btnAñadirImagen2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jComboBoxCliente, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -107,7 +132,7 @@ public class ClientesModificar extends javax.swing.JDialog {
                 .addGap(0, 18, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jComboBoxCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -118,15 +143,15 @@ public class ClientesModificar extends javax.swing.JDialog {
                         .addGap(12, 12, 12)
                         .addComponent(lblFechaDeLanzamiento))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(txtTitulo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtNombreCompleto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(3, 3, 3)
-                        .addComponent(txtDuracion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtDNI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)
-                        .addComponent(txtFechaDeLanzamiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtTelefono, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAlta)
+                    .addComponent(btnModificar)
                     .addComponent(btnAñadirImagen2))
                 .addGap(0, 18, Short.MAX_VALUE))
         );
@@ -152,9 +177,51 @@ public class ClientesModificar extends javax.swing.JDialog {
         ventana.setVisible(true);
     }//GEN-LAST:event_btnAñadirImagen2ActionPerformed
 
-    private void btnAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAltaActionPerformed
+    private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
+        int id_combo_clientes = jComboBoxCliente.getSelectedIndex();
+        Connection conexion = ConexionBD.getInstancia().getConexion();
+        ClientesDAO clientesDAO = new ClientesDAO(conexion);
+        String uuidImagenAntigua;
+        //Compruebo que hay un cliente seleccionado
+        if (id_combo_clientes != -1) {
+            //Gestiono el cliente base
+            Cliente clienteModificar = listaClientes.get(id_combo_clientes);
+            clienteModificar
+                    .setDni(txtDNI.getText())
+                    .setNombre_completo(txtNombreCompleto.getText())
+                    .setTelefono(txtTelefono.getText());
+            //Gestiono la imagen solo la subo si la imagen actual es diferente de la de la bbdd
+            if (imagenFile.getName() != clienteModificar.getImagen()) {
+                if (imagenFile != null) {
+                    uuidImagenAntigua = clienteModificar.getImagen();
+                    UUID uuid = UUID.randomUUID();
+                    FTPController ftpController = new FTPController();
+                    String extension = "";
+                    int i = imagenFile.getName().lastIndexOf('.');
+                    if (i > 0) {
+                        extension = imagenFile.getName().substring(i + 1);
+                    }
+                    //Primero subo la imagen al servidor,si falla no subo los cambios a la base de datos
+                    ftpController.uploadFile(imagenFile, uuid.toString() + "." + extension);
+                    clienteModificar.setImagen(uuid.toString() + "." + extension);
+                    //Si todo ha ido bien borro la imagen antigua del servidor
+                    ftpController.deleteFile(uuidImagenAntigua);
+                }
+            }
+            //Por ultimo subo los cambios a la base de datos
+            try {
+                clientesDAO.actualizarCliente(clienteModificar);
+                JOptionPane.showMessageDialog(this, "Cliente modificado correctamente");
+                this.dispose();
+            } catch (SQLException ex) {
+                Logger.getLogger(AnimalesModificar.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_btnModificarActionPerformed
 
-    }//GEN-LAST:event_btnAltaActionPerformed
+    private void jComboBoxClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBoxClienteActionPerformed
+       actualizarDatos();
+    }//GEN-LAST:event_jComboBoxClienteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -199,17 +266,59 @@ public class ClientesModificar extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAlta;
     private javax.swing.JButton btnAñadirImagen2;
-    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JButton btnModificar;
+    private javax.swing.JComboBox<String> jComboBoxCliente;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblDuracion;
     private javax.swing.JLabel lblFechaDeLanzamiento;
     private javax.swing.JLabel lblImagen;
     private javax.swing.JLabel lblTitulo;
-    private javax.swing.JTextField txtDuracion;
-    private javax.swing.JTextField txtFechaDeLanzamiento;
-    private javax.swing.JTextField txtTitulo;
+    private javax.swing.JTextField txtDNI;
+    private javax.swing.JTextField txtNombreCompleto;
+    private javax.swing.JTextField txtTelefono;
     // End of variables declaration//GEN-END:variables
     private File imagenFile;
+    private List<Cliente> listaClientes;
+    //Modelos Combo
+    private DefaultComboBoxModel<String> modelCliente = new DefaultComboBoxModel<>();
+
+    private void cargarComboClientes() {
+        modelCliente.removeAllElements();
+        try {
+            Connection conexion = ConexionBD.getInstancia().getConexion();
+            ClientesDAO clientesDAO = new ClientesDAO(conexion);
+            listaClientes = clientesDAO.listarClientes();
+            for (Cliente cliente : listaClientes) {
+                modelCliente.addElement(cliente.getDni());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AnimalesAlta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    /**
+     * Acutaliza la informacion de la pantalla en base al animal seleccionado
+     */
+    private void actualizarDatos() {
+        if (jComboBoxCliente.getSelectedIndex() != -1) {
+            Cliente cliente = listaClientes.get(jComboBoxCliente.getSelectedIndex());
+            //Relleno la imagen
+            if (cliente.getImagen() != null) {
+                FTPController ftpControler = new FTPController();
+                imagenFile = ftpControler.downloadFile(cliente.getImagen(), "./Cache/" + cliente.getImagen());
+                String rutaImagen = imagenFile.getAbsolutePath();
+                System.out.println("Ruta de la imagen seleccionada: " + rutaImagen);
+                ImageIcon icono = new ImageIcon(rutaImagen);
+                lblImagen.setIcon(new ImageIcon(icono.getImage().getScaledInstance(lblImagen.getWidth(), lblImagen.getHeight(), Image.SCALE_SMOOTH)));
+            } else {
+                lblImagen.setIcon(new ImageIcon(new byte[0]));
+            }
+            //Relleno las informacion
+            txtDNI.setText(cliente.getDni());
+            txtNombreCompleto.setText(cliente.getNombre_completo());
+            txtTelefono.setText(cliente.getTelefono());
+        }
+    }
+
 }

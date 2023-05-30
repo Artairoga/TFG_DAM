@@ -9,13 +9,15 @@ package com.artaioga.tfg.Modelos;
  * @author artai
  */
 public class Cliente {
+
     private int id_cliente;
     private String dni;
     private String nombre_completo;
     private String telefono;
     private String imagen;
 
-    public Cliente() {}
+    public Cliente() {
+    }
 
     public Cliente(int id_cliente, String dni, String nombre_completo, String telefono, String imagen) {
         this.id_cliente = id_cliente;
@@ -69,4 +71,18 @@ public class Cliente {
         this.imagen = imagen;
         return this;
     }
+
+    @Override
+    public String toString() {
+        String tieneImagen = (imagen != null && !imagen.isEmpty()) ? "Sí" : "No";
+
+        return "Cliente{"
+                + "id_cliente=" + id_cliente
+                + ", dni='" + dni + '\''
+                + ", nombre_completo='" + nombre_completo + '\''
+                + ", telefono='" + telefono + '\''
+                + ", imagen=" + tieneImagen
+                + '}';
+    }
+
 }

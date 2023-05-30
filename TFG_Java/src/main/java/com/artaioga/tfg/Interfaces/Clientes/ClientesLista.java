@@ -4,6 +4,20 @@
  */
 package com.artaioga.tfg.Interfaces.Clientes;
 
+import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
+import com.artaioga.tfg.GestionBBDD.ClientesDAO;
+import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.Interfaces.Animales.AnimalesAlta;
+import com.artaioga.tfg.Interfaces.Citas.CitaModificar;
+import com.artaioga.tfg.Modelos.Animal;
+import com.artaioga.tfg.Modelos.Cliente;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author artai
@@ -16,6 +30,8 @@ public class ClientesLista extends javax.swing.JDialog {
     public ClientesLista(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        jListClientes.setModel(modelCliente);
+        cargarComboClientes();
     }
 
     /**
@@ -28,17 +44,17 @@ public class ClientesLista extends javax.swing.JDialog {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        jListClientes = new javax.swing.JList<>();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
+        jListClientes.setModel(new javax.swing.AbstractListModel<String>() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public String getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(jList1);
+        jScrollPane1.setViewportView(jListClientes);
 
         jLabel1.setText("Lista Clientes");
 
@@ -112,7 +128,27 @@ public class ClientesLista extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JList<String> jList1;
+    private javax.swing.JList<String> jListClientes;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
+    private List<Cliente> listaClientes;
+    //Modelos Combo
+    private DefaultListModel<String> modelCliente = new DefaultListModel<>();
+    /**
+     * Rellena el combo de clientes con la informacion correspondiente
+     */
+    private void cargarComboClientes() {
+        modelCliente.removeAllElements();
+        try {
+            Connection conexion = ConexionBD.getInstancia().getConexion();
+            ClientesDAO clientesDAO = new ClientesDAO(conexion);
+            listaClientes = clientesDAO.listarClientes();
+            for (Cliente cliente : listaClientes) {
+                modelCliente.addElement(cliente.toString());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AnimalesAlta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
 }

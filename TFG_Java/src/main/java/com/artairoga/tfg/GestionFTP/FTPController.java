@@ -106,4 +106,34 @@ public class FTPController {
             }
         }
     }
+    //metodo que elimina una imagen del servidor ftp dado su uuid
+    public boolean deleteFile(String uuid) {
+        FTPClient ftpClient = new FTPClient();
+        try {
+            ftpClient.connect(ip, puerto);
+            ftpClient.login(user, password);
+            ftpClient.enterLocalPassiveMode();
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+
+            if (ftpClient.deleteFile(remotePath + "/" + uuid)) {
+                System.out.println("El archivo ha sido eliminado con éxito");
+                return true;
+            } else {
+                System.out.println("Error al eliminar el archivo");
+                return false;
+            }
+        } catch (IOException ex) {
+            System.out.println("Error al eliminar el archivo: " + ex.getMessage());
+            return false;
+        } finally {
+            try {
+                if (ftpClient.isConnected()) {
+                    ftpClient.logout();
+                    ftpClient.disconnect();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 }

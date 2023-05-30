@@ -37,7 +37,10 @@ public class Principal extends javax.swing.JFrame {
     public Principal() {
         initComponents();
         tableModel = (DefaultTableModel) jTableCitas.getModel();
-        cargarTabla(jTableCitas);
+        inicializarConexion();
+        if(conexion!=null){
+            cargarTabla(jTableCitas);
+        }
     }
 
     /**
@@ -391,9 +394,9 @@ public class Principal extends javax.swing.JFrame {
     private Ajustes ajustes;
     //Tabla
     private DefaultTableModel tableModel;
+    private Connection conexion;
     public void cargarTabla(JTable jTableCitas) {
         try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
             CitasDAO citasDao = new CitasDAO(conexion);
             AnimalesDAO animalesDao = new AnimalesDAO(conexion);
             ClientesDAO clientesDao = new ClientesDAO(conexion);
@@ -418,5 +421,8 @@ public class Principal extends javax.swing.JFrame {
             Logger.getLogger(Principal.class
                     .getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    private void inicializarConexion(){
+        conexion = ConexionBD.getInstancia().getConexion();
     }
 }
