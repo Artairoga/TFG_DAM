@@ -8,15 +8,17 @@ import 'RespuestasCitas.dart';
 
 class SolcitudesCitas {
   final apikey = connectionProvider.apiKey;
-  final ip=connectionProvider.ip;
-  final port=connectionProvider.port;
+  final ip = connectionProvider.ip;
+  final port = connectionProvider.port;
+
   Future<List<Citas>> listaCitas() async {
     final url = Uri.parse(
         'http://$ip:$port/api/v1/db/data/noco/p_n964z0esixbmcl/Citas/views/Citas');
     final headers = {'xc-token': apikey};
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200) {
-      List<Citas> citas = RespuestaCitas.fromJson(jsonDecode(response.body)).list;
+      List<Citas> citas =
+          RespuestaCitas.fromJson(jsonDecode(response.body)).list;
       return citas;
     } else {
       print(response.statusCode);
@@ -39,26 +41,15 @@ class SolcitudesCitas {
       throw Exception('Error al cargar la cita');
     }
   }
+
   Future<List<Citas>> obtenerCitasPorClientes({required int idCliente}) async {
     final url = Uri.parse(
         'http://$ip:$port/api/v1/db/data/noco/p_n964z0esixbmcl/Citas/views/Citas?where=(IdCliente,eq,$idCliente)');
     final headers = {'xc-token': apikey};
     final response = await http.get(url, headers: headers);
     if (response.statusCode == 200) {
-      List<Citas> citas = RespuestaCitas.fromJson(jsonDecode(response.body)).list;
-      return citas;
-    } else {
-      print(response.statusCode);
-      throw Exception('Error al cargar las citas');
-    }
-  }
-  Future<List<Citas>> obtenerCitasPorAnimales({required int idAnimal}) async {
-    final url = Uri.parse(
-        'http://$ip:$port/api/v1/db/data/noco/p_n964z0esixbmcl/Citas/views/Citas?where=(IdAnimal,eq,$idAnimal)');
-    final headers = {'xc-token': apikey};
-    final response = await http.get(url, headers: headers);
-    if (response.statusCode == 200) {
-      List<Citas> citas = RespuestaCitas.fromJson(jsonDecode(response.body)).list;
+      List<Citas> citas =
+          RespuestaCitas.fromJson(jsonDecode(response.body)).list;
       return citas;
     } else {
       print(response.statusCode);
@@ -66,4 +57,18 @@ class SolcitudesCitas {
     }
   }
 
+  Future<List<Citas>> obtenerCitasPorAnimales({required int idAnimal}) async {
+    final url = Uri.parse(
+        'http://$ip:$port/api/v1/db/data/noco/p_n964z0esixbmcl/Citas/views/Citas?where=(IdAnimal,eq,$idAnimal)');
+    final headers = {'xc-token': apikey};
+    final response = await http.get(url, headers: headers);
+    if (response.statusCode == 200) {
+      List<Citas> citas =
+          RespuestaCitas.fromJson(jsonDecode(response.body)).list;
+      return citas;
+    } else {
+      print(response.statusCode);
+      throw Exception('Error al cargar las citas');
+    }
+  }
 }

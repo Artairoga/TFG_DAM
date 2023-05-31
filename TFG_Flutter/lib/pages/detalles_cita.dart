@@ -9,6 +9,7 @@ import '../modelos/Clientes/Cliente.dart';
 
 class DetallesCita extends StatelessWidget {
   const DetallesCita({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     var cita = ModalRoute.of(context)!.settings.arguments as Citas;
@@ -49,7 +50,7 @@ class _InfoCliente extends StatelessWidget {
       future: SolcitudesClientes().obtenerCliente(idCliente: cita.id_clientes!),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-        Clientes cliente = snapshot.data as Clientes;
+          Clientes cliente = snapshot.data as Clientes;
           return Column(
             children: [
               Row(
@@ -96,7 +97,7 @@ class _InfoAnimal extends StatelessWidget {
       future: SolcitudesAnimales().obtenerAnimal(idAnimal: cita.id_animales!),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-        Animales animal = snapshot.data as Animales;
+          Animales animal = snapshot.data as Animales;
           return Row(
             children: [
               Text(
@@ -125,10 +126,9 @@ class _InfoCita extends StatefulWidget {
 }
 
 class _InfoCitaState extends State<_InfoCita> {
-
   @override
   Widget build(BuildContext context) {
-    bool _isPendiente = widget.cita.pendiente==1;
+    bool _isPendiente = widget.cita.pendiente == 1;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

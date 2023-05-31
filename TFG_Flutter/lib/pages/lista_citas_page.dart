@@ -1,10 +1,8 @@
-import 'package:ante_proyecto/modelos/Citas/SolictudesCitas.dart';
-import 'package:ante_proyecto/pages/detalles_animal.dart';
-import 'package:ante_proyecto/pages/detalles_cita.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../modelos/modelos.dart';
+import '../pages/pages.dart';
 
 class CitasPage extends StatelessWidget {
   const CitasPage({Key? key}) : super(key: key);
@@ -28,8 +26,8 @@ class CitasPage extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 Citas cita = listaCitas[index];
                 return ListTile(
-                  title:
-                      Text((DateFormat('dd/MM/yyyy HH:mm').format(cita.fecha!))),
+                  title: Text(
+                      (DateFormat('dd/MM/yyyy HH:mm').format(cita.fecha!))),
                   subtitle: Text(cita.descripcion!),
                   trailing: Icon(Icons.arrow_forward),
                   onTap: () {

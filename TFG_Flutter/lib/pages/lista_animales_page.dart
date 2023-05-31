@@ -1,8 +1,6 @@
 import 'package:ante_proyecto/providers/ip_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import '../modelos/Animales/SolictudesAnimales.dart';
 import '../modelos/modelos.dart';
 import 'detalles_animal.dart';
 
@@ -67,9 +65,10 @@ class _AnimalTile extends StatelessWidget {
   Widget build(BuildContext context) {
     String ip = connectionProvider.ip;
     return ListTile(
-      leading: animal.imagen!=null
+      leading: animal.imagen != null
           ? CircleAvatar(
-              backgroundImage: NetworkImage('http://$ip/Images/${animal.imagen!}'),
+              backgroundImage:
+                  NetworkImage('http://$ip/Images/${animal.imagen!}'),
             )
           : const CircleAvatar(
               child: Icon(Icons.pets),

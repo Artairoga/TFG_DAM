@@ -65,16 +65,15 @@ class SettingsPage extends StatelessWidget {
                 onPressed: () async {
                   //al darle al boton se comprueba la conexion con los nuevos datos
                   connectionStatus = await connectionProvider.changeConnection(
-                      newIp: _ipController.text,
-                      newPort: _portController.text);
+                      newIp: _ipController.text, newPort: _portController.text);
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text(connectionStatus==200
+                        title: Text(connectionStatus == 200
                             ? 'Conexión exitosa'
                             : 'Conexión fallida'),
-                        content: Text(connectionStatus==200
+                        content: Text(connectionStatus == 200
                             ? 'La conexión con el servidor se ha establecido correctamente.'
                             : 'No se ha podido establecer la conexión con el servidor.'),
                         actions: [
@@ -97,12 +96,12 @@ class SettingsPage extends StatelessWidget {
                   'La conexión con el servidor se ha establecido correctamente.',
                   style: TextStyle(color: Colors.green),
                 )
-              else if(connectionStatus==404)
+              else if (connectionStatus == 404)
                 const Text(
                   'Servidor Inaccesible. Error 404',
                   style: TextStyle(color: Colors.red),
                 )
-              else if(connectionStatus==401)
+              else if (connectionStatus == 401)
                 const Text(
                   'Api Incorrecta. Error 403',
                   style: TextStyle(color: Colors.red),

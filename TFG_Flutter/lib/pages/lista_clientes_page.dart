@@ -1,4 +1,3 @@
-import 'package:ante_proyecto/modelos/Clientes/SolictudesClientes.dart';
 import 'package:ante_proyecto/pages/detalles_cliente.dart';
 import 'package:flutter/material.dart';
 
@@ -67,7 +66,8 @@ class _TileCliente extends StatelessWidget {
     return ListTile(
       leading: cliente.imagen != null
           ? CircleAvatar(
-              backgroundImage: NetworkImage('http://$ip/Images/${cliente.imagen!}'),
+              backgroundImage:
+                  NetworkImage('http://$ip/Images/${cliente.imagen!}'),
             )
           : const CircleAvatar(
               child: Icon(Icons.person),
@@ -124,7 +124,7 @@ class ClientSearch extends SearchDelegate {
         .where((cliente) =>
             cliente.nombreCompleto!.toLowerCase().contains(query.toLowerCase()))
         .toList();
-    String ip_servidor=connectionProvider.ip;
+    String ip_servidor = connectionProvider.ip;
     return ListView.builder(
       itemCount: results.length,
       itemBuilder: (BuildContext context, int index) {

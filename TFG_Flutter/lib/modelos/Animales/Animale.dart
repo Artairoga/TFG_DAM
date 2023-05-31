@@ -17,7 +17,7 @@ class Animales {
 
   factory Animales.fromJson(Map<String, dynamic> json) => Animales(
         idAnimal: json["IdAnimal"],
-    nombreAnimal: json["NombreAnimal"],
+        nombreAnimal: json["NombreAnimal"],
         caracteristicas: json["Caracteristicas"],
         imagen: json["Imagen"],
         id_clientes: json["Clientes"]["IdCliente"],

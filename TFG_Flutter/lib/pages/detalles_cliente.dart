@@ -1,4 +1,3 @@
-import 'package:ante_proyecto/modelos/Citas/SolictudesCitas.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -73,9 +72,10 @@ class _InfoCliente extends StatelessWidget {
       ],
     );
   }
-  Container ImagenCliente(){
-    String ip=connectionProvider.ip;
-    if(cliente.imagen==null){
+
+  Container ImagenCliente() {
+    String ip = connectionProvider.ip;
+    if (cliente.imagen == null) {
       return Container(
         width: double.infinity,
         height: 200,
@@ -90,7 +90,7 @@ class _InfoCliente extends StatelessWidget {
           ),
         ),
       );
-    }else{
+    } else {
       return Container(
         width: double.infinity,
         height: 200,
@@ -103,7 +103,6 @@ class _InfoCliente extends StatelessWidget {
       );
     }
   }
-
 }
 
 class _InfoCitas extends StatelessWidget {

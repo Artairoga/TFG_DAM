@@ -18,7 +18,7 @@ class Citas {
   factory Citas.fromJson(Map<String, dynamic> json) {
     return Citas(
       idCita: json["IdCita"],
-      fecha: DateTime.parse(json["Fecha"]+" "+json["HoraInicio"]),
+      fecha: DateTime.parse(json["Fecha"] + " " + json["HoraInicio"]),
       pendiente: json["Pendiente"],
       id_clientes: json["Clientes"]["IdCliente"],
       id_animales: json["Animales"]["IdAnimal"],

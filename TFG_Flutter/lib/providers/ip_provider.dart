@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 ConnectionProvider connectionProvider = ConnectionProvider._();
+
 class ConnectionProvider extends ChangeNotifier {
   String _ip = '192.168.255.253';
   String _port = '8080';
@@ -18,15 +19,14 @@ class ConnectionProvider extends ChangeNotifier {
   Future<int> changeConnection(
       {required String newIp, required String newPort}) async {
     try {
-      final url = Uri.parse(
-          'http://$newIp:$newPort');
+      final url = Uri.parse('http://$newIp:$newPort');
       final response = await http.get(url).timeout(Duration(seconds: 5));
       _ConnectionCode = response.statusCode;
       _ip = newIp;
       _port = newPort;
     } catch (e) {
       print(e);
-      _ConnectionCode=404;
+      _ConnectionCode = 404;
     }
     notifyListeners();
     await _safeToPrefs();
@@ -41,7 +41,7 @@ class ConnectionProvider extends ChangeNotifier {
       _ConnectionCode = response.statusCode;
     } catch (e) {
       print(e);
-      _ConnectionCode=404;
+      _ConnectionCode = 404;
     }
     notifyListeners();
   }
@@ -81,7 +81,6 @@ class ConnectionProvider extends ChangeNotifier {
   set port(String value) {
     _port = value;
   }
-
 
   int get ConnectionCode => _ConnectionCode;
 

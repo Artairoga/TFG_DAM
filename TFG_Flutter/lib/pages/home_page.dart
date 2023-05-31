@@ -16,7 +16,7 @@ class HomePage extends StatelessWidget {
       ),
       body: Consumer<ConnectionProvider>(
         builder: (context, provider, child) {
-          if (provider.ConnectionCode==200) {
+          if (provider.ConnectionCode == 200) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

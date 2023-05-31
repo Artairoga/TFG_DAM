@@ -2,7 +2,6 @@ import 'package:ante_proyecto/providers/ip_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import '../modelos/Citas/SolictudesCitas.dart';
 import '../modelos/modelos.dart';
 
 class AnimalPage extends StatelessWidget {
@@ -20,19 +19,18 @@ class AnimalPage extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _InfoAnimal(animal: animal),
-              _InfoCitas(animal: animal)
-            ],
+            children: [_InfoAnimal(animal: animal), _InfoCitas(animal: animal)],
           ),
         ),
       ),
     );
   }
 }
+
 class _InfoAnimal extends StatelessWidget {
   final Animales animal;
-  _InfoAnimal({Key? key,required this.animal}) : super(key: key);
+
+  _InfoAnimal({Key? key, required this.animal}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -51,32 +49,14 @@ class _InfoAnimal extends StatelessWidget {
           style: TextStyle(fontSize: 16),
         ),
         SizedBox(height: 16),
-        Text(
-          'Dueño:',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 8),
-        Text(
-          "NombreCompletoDueño",
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(height: 16),
-        Text(
-          'Teléfono:',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 8),
-        Text(
-          "TelefonoDueño",
-          style: TextStyle(fontSize: 16),
-        ),
-        SizedBox(height: 16),
+        _InfoCliente(animal: animal,)
       ],
     );
   }
-  Container ImagenAnimal(){
-    String ip=connectionProvider.ip;
-    if(animal.imagen==null){
+
+  Container ImagenAnimal() {
+    String ip = connectionProvider.ip;
+    if (animal.imagen == null) {
       return Container(
         width: double.infinity,
         height: 200,
@@ -91,7 +71,7 @@ class _InfoAnimal extends StatelessWidget {
           ),
         ),
       );
-    }else{
+    } else {
       return Container(
         width: double.infinity,
         height: 200,
@@ -114,7 +94,8 @@ class _InfoCitas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: SolcitudesCitas().obtenerCitasPorAnimales(idAnimal: animal.idAnimal!),
+      future:
+          SolcitudesCitas().obtenerCitasPorAnimales(idAnimal: animal.idAnimal!),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           List<Citas> listaCitasCompleta = snapshot.data as List<Citas>;
@@ -128,9 +109,12 @@ class _InfoCitas extends StatelessWidget {
                   leading: Icon(Icons.calendar_today),
                   title: Column(
                     children: [
-                      Text(DateFormat('dd/MM/yyyy HH:mm').format(listaCitasCompleta[index].fecha!)),
+                      Text(DateFormat('dd/MM/yyyy HH:mm')
+                          .format(listaCitasCompleta[index].fecha!)),
                       SizedBox(width: 8.0),
-                      Text(listaCitasCompleta[index].pendiente==0! ? 'Pendiente' : 'Realizada'),
+                      Text(listaCitasCompleta[index].pendiente == 0!
+                          ? 'Pendiente'
+                          : 'Realizada'),
                     ],
                   ),
                   trailing: Icon(Icons.arrow_forward),
@@ -147,3 +131,47 @@ class _InfoCitas extends StatelessWidget {
     );
   }
 }
+class _InfoCliente extends StatelessWidget {
+  final Animales animal;
+  _InfoCliente({Key? key,required this.animal}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: SolcitudesClientes().obtenerCliente(idCliente: animal.id_clientes!),
+      builder: (context, snapshot) {
+        if(snapshot.hasData) {
+          Clientes cliente = snapshot.data as Clientes;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start, // Alineación a la izquierda
+            children: [
+              Text(
+                'Dueño:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                cliente.nombreCompleto!,
+                style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(height: 16),
+              Text(
+                'Teléfono:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Text(
+                cliente.telefono!,
+                style: TextStyle(fontSize: 16),
+              ),
+              SizedBox(height: 16),
+            ],
+          );
+        } else {
+          return Container();
+        }
+      },
+    );
+  }
+}
+

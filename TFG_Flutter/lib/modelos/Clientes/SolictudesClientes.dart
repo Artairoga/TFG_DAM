@@ -1,16 +1,16 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 import '../../providers/ip_provider.dart';
 import 'Cliente.dart';
 import 'RespuestasClientes.dart';
 
 class SolcitudesClientes {
-  final apikey =connectionProvider.apiKey;
+  final apikey = connectionProvider.apiKey;
   final ip = connectionProvider.ip;
   final port = connectionProvider.port;
+
   Future<List<Clientes>> listaClientes() async {
     final url = Uri.parse(
         'http://$ip:$port/api/v1/db/data/noco/p_n964z0esixbmcl/Clientes/views/Clientes');
