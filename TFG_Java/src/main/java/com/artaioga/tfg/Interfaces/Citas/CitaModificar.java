@@ -8,6 +8,7 @@ import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
 import com.artaioga.tfg.GestionBBDD.CitasDAO;
 import com.artaioga.tfg.GestionBBDD.ClientesDAO;
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.Interfaces.Principal;
 import com.artaioga.tfg.Modelos.Animal;
 import com.artaioga.tfg.Modelos.Cita;
 import com.artaioga.tfg.Modelos.Cliente;
@@ -30,7 +31,7 @@ public class CitaModificar extends javax.swing.JDialog {
     /**
      * Creates new form EditarCita
      */
-    public CitaModificar(java.awt.Frame parent, boolean modal) {
+    public CitaModificar(java.awt.Frame parent, boolean modal,Principal principal) {
         super(parent, modal);
         initComponents();
         jComboBoxCitas.setModel(modelCitas);
@@ -40,6 +41,7 @@ public class CitaModificar extends javax.swing.JDialog {
         cargarComboAnimales();
         cargarComboClientes();
         cargarInfo();
+        this.principal=principal;
     }
 
     /**
@@ -205,6 +207,7 @@ public class CitaModificar extends javax.swing.JDialog {
             cargarComboAnimales();
             cargarComboClientes();
             cargarInfo();
+            principal.cargarTabla();
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -247,7 +250,7 @@ public class CitaModificar extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                CitaModificar dialog = new CitaModificar(new javax.swing.JFrame(), true);
+                CitaModificar dialog = new CitaModificar(new javax.swing.JFrame(), true,principal);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -283,7 +286,8 @@ public class CitaModificar extends javax.swing.JDialog {
     private List<Cita> listaCitas;
     private List<Animal> listarAnimales;
     private List<Cliente> listarCliente;
-
+    //Panel
+    private static Principal principal;
     /**
      * Carga los datos correspondientes en el combo de citas
      */

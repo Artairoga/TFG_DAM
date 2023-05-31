@@ -39,7 +39,7 @@ public class Principal extends javax.swing.JFrame {
         tableModel = (DefaultTableModel) jTableCitas.getModel();
         inicializarConexion();
         if(conexion!=null){
-            cargarTabla(jTableCitas);
+            cargarTabla();
         }
     }
 
@@ -291,7 +291,7 @@ public class Principal extends javax.swing.JFrame {
         if (citaAlta != null) {
             citaAlta.dispose();
         }
-        citaAlta = new CitaAlta(this, false);
+        citaAlta = new CitaAlta(this, false,this);
         citaAlta.setVisible(true);
     }//GEN-LAST:event_jButtonNuevaCitaActionPerformed
 
@@ -299,7 +299,7 @@ public class Principal extends javax.swing.JFrame {
         if (citaBaja != null) {
             citaBaja.dispose();
         }
-        citaBaja = new CitaBaja(this, false);
+        citaBaja = new CitaBaja(this, false,this);
         citaBaja.setVisible(true);
     }//GEN-LAST:event_jButtonBorrarCitaActionPerformed
 
@@ -307,7 +307,7 @@ public class Principal extends javax.swing.JFrame {
         if (citaModificar != null) {
             citaModificar.dispose();
         }
-        citaModificar = new CitaModificar(this, false);
+        citaModificar = new CitaModificar(this, false,this);
         citaModificar.setVisible(true);
     }//GEN-LAST:event_jButtonEditarCitaActionPerformed
 
@@ -395,7 +395,8 @@ public class Principal extends javax.swing.JFrame {
     //Tabla
     private DefaultTableModel tableModel;
     private Connection conexion;
-    public void cargarTabla(JTable jTableCitas) {
+    public void cargarTabla() {
+        tableModel.setRowCount(0);
         try {
             CitasDAO citasDao = new CitasDAO(conexion);
             AnimalesDAO animalesDao = new AnimalesDAO(conexion);

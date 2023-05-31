@@ -8,6 +8,7 @@ import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
 import com.artaioga.tfg.GestionBBDD.CitasDAO;
 import com.artaioga.tfg.GestionBBDD.ClientesDAO;
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.Interfaces.Principal;
 import com.artaioga.tfg.Modelos.Animal;
 import com.artaioga.tfg.Modelos.Cita;
 import com.artaioga.tfg.Modelos.Cliente;
@@ -30,13 +31,14 @@ public class CitaAlta extends javax.swing.JDialog {
     /**
      * Creates new form NuevaCita
      */
-    public CitaAlta(java.awt.Frame parent, boolean modal) {
+    public CitaAlta(java.awt.Frame parent, boolean modal, Principal principal) {
         super(parent, modal);
         initComponents();
         jComboBoxClientes.setModel(modelCliente);
         jComboBoxAnimales.setModel(modelAnimal);
         cargarComboAnimales();
         cargarComboClientes();
+        this.principal = principal;
     }
 
     /**
@@ -180,6 +182,7 @@ public class CitaAlta extends javax.swing.JDialog {
             CitasDAO citasDao = new CitasDAO(conexion);
             citasDao.insertarCita(cita);
             JOptionPane.showMessageDialog(this, "Alta correcta!");
+            principal.cargarTabla();
             this.dispose();
         } catch (SQLException e) {
             System.out.println(e);
@@ -217,7 +220,7 @@ public class CitaAlta extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                CitaAlta dialog = new CitaAlta(new javax.swing.JFrame(), true);
+                CitaAlta dialog = new CitaAlta(new javax.swing.JFrame(), true,principal);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -249,6 +252,9 @@ public class CitaAlta extends javax.swing.JDialog {
     //Modelos listas
     private List<Animal> listarAnimales;
     private List<Cliente> listarCliente;
+    //Principal
+    private static Principal principal;
+
     /**
      * Carga la informacion correspondiente en el combo de animales
      */

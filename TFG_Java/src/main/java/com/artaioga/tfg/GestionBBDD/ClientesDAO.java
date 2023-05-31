@@ -88,8 +88,20 @@ public class ClientesDAO {
     public int eliminarCliente(int id_cliente) throws SQLException {
         String sql = "DELETE FROM clientes WHERE id_cliente = ?";
         try (PreparedStatement statement = conexion.prepareStatement(sql)) {
+            conexion.setAutoCommit(false); // Desactivar el modo de confirmación automática
+
             statement.setInt(1, id_cliente);
-            return statement.executeUpdate();
+            int filasEliminadas = statement.executeUpdate();
+
+            conexion.commit(); // Confirmar la transacción
+
+            return filasEliminadas;
+        } catch (SQLException e) {
+            conexion.rollback(); // Revertir la transacción en caso de error
+            throw e;
+        } finally {
+            conexion.setAutoCommit(true); // Restaurar el modo de confirmación automática
         }
     }
+
 }

@@ -25,11 +25,12 @@ public class CitaBaja extends javax.swing.JDialog {
     /**
      * Creates new form BorrarCita
      */
-    public CitaBaja(java.awt.Frame parent, boolean modal) {
+    public CitaBaja(java.awt.Frame parent, boolean modal,Principal principal) {
         super(parent, modal);
         initComponents();
         jComboBox1.setModel(model);
         cargarComboCitas();
+        this.principal=principal;
     }
 
     /**
@@ -108,6 +109,8 @@ public class CitaBaja extends javax.swing.JDialog {
             citasDao.eliminarCita(citaModificar.getIdCita());
             //Acualizo el combo para que los cambios se vean reflejados
             cargarComboCitas();
+            //Actualizo la tabla de citas
+            principal.cargarTabla();
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -144,7 +147,7 @@ public class CitaBaja extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                CitaBaja dialog = new CitaBaja(new javax.swing.JFrame(), true);
+                CitaBaja dialog = new CitaBaja(new javax.swing.JFrame(), true,principal);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -165,6 +168,8 @@ public class CitaBaja extends javax.swing.JDialog {
     DefaultComboBoxModel<Cita> model = new DefaultComboBoxModel<>();
     //Listas
     List<Cita> listaCitas;
+    //Panel
+    private static Principal principal;
     /**
      * Carga los datos correspondientes en el combo de citas
      */
