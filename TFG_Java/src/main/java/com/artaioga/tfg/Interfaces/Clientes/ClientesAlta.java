@@ -7,6 +7,7 @@ package com.artaioga.tfg.Interfaces.Clientes;
 import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
 import com.artaioga.tfg.GestionBBDD.ClientesDAO;
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.GestionBBDD.Observers.ClientesObserver;
 import com.artaioga.tfg.Interfaces.Animales.AnimalesAlta;
 import com.artaioga.tfg.Modelos.Animal;
 import com.artaioga.tfg.Modelos.Cliente;
@@ -34,6 +35,10 @@ public class ClientesAlta extends javax.swing.JDialog {
      */
     public ClientesAlta(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
+        //Inicializamos la conexion
+        conexionBD=ConexionBD.getInstancia().getConexion();
+        //Inicializamos el DAO
+        clientesDAO=ClientesDAO.getInstance(conexionBD);
         initComponents();
     }
 
@@ -162,6 +167,16 @@ public class ClientesAlta extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Los campos no pueden estar vacios");
             return;
         }
+        //Compruebo que el DNI tiene 8 numeros y una letra
+        if (!txtDNI.getText().matches("[0-9]{8}[A-Z]")) {
+            JOptionPane.showMessageDialog(this, "El DNI debe tener 8 numeros y una letra");
+            return;
+        }
+        //Compruebo que el telefono son solo numeros
+        if (!txtTelefono.getText().matches("[0-9]+")) {
+            JOptionPane.showMessageDialog(this, "El telefono solo puede contener numeros");
+            return;
+        }
         //Cliente base (pattern builder)
         Cliente cliente = new Cliente()
                 .setDni(txtDNI.getText())
@@ -179,8 +194,6 @@ public class ClientesAlta extends javax.swing.JDialog {
         }
         //Por ultimo subo los cambios a la bbdd y cierro la pestaña
         try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            ClientesDAO clientesDAO = new ClientesDAO(conexion);
             clientesDAO.insertarCliente(cliente);
             JOptionPane.showMessageDialog(this, "Alta correcta!");
             this.dispose();
@@ -243,4 +256,8 @@ public class ClientesAlta extends javax.swing.JDialog {
     private javax.swing.JTextField txtTelefono;
     // End of variables declaration//GEN-END:variables
     private File imagenFile;
+    //DAO
+    private ClientesDAO clientesDAO;
+    //Conexion
+    private Connection conexionBD;
 }

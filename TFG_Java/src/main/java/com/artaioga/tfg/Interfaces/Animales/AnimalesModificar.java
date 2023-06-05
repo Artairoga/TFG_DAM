@@ -4,19 +4,19 @@
  */
 package com.artaioga.tfg.Interfaces.Animales;
 
-import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
-import com.artaioga.tfg.GestionBBDD.CitasDAO;
-import com.artaioga.tfg.GestionBBDD.ClientesDAO;
-import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.GestionBBDD.*;
+import com.artaioga.tfg.GestionBBDD.Observers.AnimalesObserver;
+import com.artaioga.tfg.GestionBBDD.Observers.ClientesObserver;
 import com.artaioga.tfg.Interfaces.Citas.CitaModificar;
 import com.artaioga.tfg.Modelos.Animal;
-import com.artaioga.tfg.Modelos.Cita;
 import com.artaioga.tfg.Modelos.Cliente;
 import com.artairoga.tfg.GestionFTP.FTPController;
+
 import java.awt.Image;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -28,10 +28,9 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
- *
  * @author artai
  */
-public class AnimalesModificar extends javax.swing.JDialog {
+public class AnimalesModificar extends javax.swing.JDialog implements AnimalesObserver, ClientesObserver {
 
     /**
      * Creates new form AnimalesModificar
@@ -39,6 +38,15 @@ public class AnimalesModificar extends javax.swing.JDialog {
     public AnimalesModificar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        //Se crea la conexion con la base de datos
+        conexionBD = ConexionBD.getInstancia().getConexion();
+        //Se crea el objeto DAO para poder realizar las operaciones con la base de datos
+        animalesDAO = AnimalesDAO.getInstance(conexionBD);
+        clientesDAO = ClientesDAO.getInstance(conexionBD);
+        //Se agrega como observador de la lista de animales
+        animalesDAO.agregarObservador(this);
+        clientesDAO.agregarObservador(this);
+        //Se inicializan los datos
         jComboBoxAnimales.setModel(modelAnimal);
         jComboBoxCliente.setModel(modelCliente);
         cargarComboAnimales();
@@ -89,7 +97,7 @@ public class AnimalesModificar extends javax.swing.JDialog {
 
         lblTitulo.setText("Dueño");
 
-        lblDuracion.setText("Raza");
+        lblDuracion.setText("Nombre ");
 
         lblFechaDeLanzamiento.setText("Descripcion");
 
@@ -174,7 +182,7 @@ public class AnimalesModificar extends javax.swing.JDialog {
         int id_combo_animales = jComboBoxAnimales.getSelectedIndex();
         int id_combo_clientes = jComboBoxCliente.getSelectedIndex();
         Connection conexion = ConexionBD.getInstancia().getConexion();
-        AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
+        AnimalesDAO animalesDAO = AnimalesDAO.getInstance(conexion);
         String uuidImagenAntigua;
         //Compruebo que hay un animal seleccionado
         if (id_combo_animales != -1) {
@@ -186,8 +194,8 @@ public class AnimalesModificar extends javax.swing.JDialog {
                     .setNombreAnimal(txtRaza.getText())
                     .setIdCliente(cliente.getId_cliente());
             //Gestiono la imagen solo la subo si la imagen actual es diferente de la de la bbdd
-            if (imagenFile.getName() != animalModificar.getImagen()) {
-                if (imagenFile != null) {
+            if (imagenFile != null) {
+                if (imagenFile.getName() != animalModificar.getImagen()) {
                     uuidImagenAntigua = animalModificar.getImagen();
                     UUID uuid = UUID.randomUUID();
                     FTPController ftpController = new FTPController();
@@ -244,7 +252,7 @@ public class AnimalesModificar extends javax.swing.JDialog {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -300,7 +308,11 @@ public class AnimalesModificar extends javax.swing.JDialog {
     //Modelos combos
     private DefaultComboBoxModel<String> modelAnimal = new DefaultComboBoxModel<>();
     private DefaultComboBoxModel<String> modelCliente = new DefaultComboBoxModel<>();
-
+    //Conexion
+    private Connection conexionBD;
+    //DAOS
+    private AnimalesDAO animalesDAO;
+    private ClientesDAO clientesDAO;
     /**
      * Cargo la informacion correspondiente en el combo de los animales
      */
@@ -309,7 +321,7 @@ public class AnimalesModificar extends javax.swing.JDialog {
         try {
             Connection conexion = ConexionBD.getInstancia().getConexion();
             AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
-            listarAnimales = animalesDAO.listar();
+            listarAnimales = animalesDAO.listar(new HashMap<>());
             for (Animal animal : listarAnimales) {
                 modelAnimal.addElement(animal.toString());
             }
@@ -318,6 +330,7 @@ public class AnimalesModificar extends javax.swing.JDialog {
         }
 
     }
+
     /**
      * Cargo la informacion correspondiente en el combo de clientes
      */
@@ -335,9 +348,11 @@ public class AnimalesModificar extends javax.swing.JDialog {
         }
 
     }
+
     /**
      * Devuelve la posicion de la lista en la que esta el dueño de un animal
-     * @param list lista de clientes donde buscar
+     *
+     * @param list   lista de clientes donde buscar
      * @param animal animal del cual se quiere buscar el dueño en la lista
      * @return posicion del dueño del animal en la lista
      */
@@ -353,6 +368,7 @@ public class AnimalesModificar extends javax.swing.JDialog {
         }
         return -1;
     }
+
     /**
      * Acutaliza la informacion de la pantalla en base al animal seleccionado
      */
@@ -362,7 +378,7 @@ public class AnimalesModificar extends javax.swing.JDialog {
             //Relleno la imagen
             if (animal.getImagen() != null) {
                 FTPController ftpControler = new FTPController();
-                imagenFile = ftpControler.downloadFile(animal.getImagen(), "./Cache/" + animal.getImagen());
+                imagenFile = ftpControler.downloadFile(animal.getImagen(), "./Resources/Cache/" + animal.getImagen());
                 String rutaImagen = imagenFile.getAbsolutePath();
                 System.out.println("Ruta de la imagen seleccionada: " + rutaImagen);
                 ImageIcon icono = new ImageIcon(rutaImagen);
@@ -377,5 +393,15 @@ public class AnimalesModificar extends javax.swing.JDialog {
             jTextAreaCaracteristicas.setText(animal.getCaracteristicas());
 
         }
+    }
+
+    @Override
+    public void actualizarAnimales() {
+        cargarComboAnimales();
+    }
+
+    @Override
+    public void actualizarClientes() {
+        cargarComboClientes();
     }
 }

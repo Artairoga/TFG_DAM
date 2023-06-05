@@ -31,7 +31,7 @@ public class FTPController {
 
     public FTPController() {
         Properties propiedades = new Properties();
-        try (InputStream entrada = ConexionBD.class.getClassLoader().getResourceAsStream("config.properties")) {
+        try (InputStream entrada = new FileInputStream("./Resources/config.properties")) {
             propiedades.load(entrada);
             String ipFtp = propiedades.getProperty("db.ip");
             this.ip = ipFtp;

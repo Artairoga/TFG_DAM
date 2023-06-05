@@ -7,6 +7,7 @@ package com.artaioga.tfg.Interfaces.Clientes;
 import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
 import com.artaioga.tfg.GestionBBDD.ClientesDAO;
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.GestionBBDD.Observers.ClientesObserver;
 import com.artaioga.tfg.Interfaces.Animales.AnimalesAlta;
 import com.artaioga.tfg.Interfaces.Citas.CitaModificar;
 import com.artaioga.tfg.Modelos.Animal;
@@ -22,7 +23,7 @@ import javax.swing.DefaultListModel;
  *
  * @author artai
  */
-public class ClientesLista extends javax.swing.JDialog {
+public class ClientesLista extends javax.swing.JDialog implements ClientesObserver {
 
     /**
      * Creates new form ClientesLista
@@ -30,6 +31,13 @@ public class ClientesLista extends javax.swing.JDialog {
     public ClientesLista(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        //Inicializamos la conexion a la BBDD
+        conexionBD= ConexionBD.getInstancia().getConexion();
+        //Inicializamos el DAO de Clientes
+        clientesDAO = ClientesDAO.getInstance(conexionBD);
+        //Lo añadimos como observador
+        clientesDAO.agregarObservador(this);
+        //Cargamos el combo
         jListClientes.setModel(modelCliente);
         cargarComboClientes();
     }
@@ -77,8 +85,8 @@ public class ClientesLista extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -134,14 +142,16 @@ public class ClientesLista extends javax.swing.JDialog {
     private List<Cliente> listaClientes;
     //Modelos Combo
     private DefaultListModel<String> modelCliente = new DefaultListModel<>();
+    //ConexionBD
+    private Connection conexionBD;
+    //DAO
+    private ClientesDAO clientesDAO;
     /**
      * Rellena el combo de clientes con la informacion correspondiente
      */
     private void cargarComboClientes() {
         modelCliente.removeAllElements();
         try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            ClientesDAO clientesDAO = new ClientesDAO(conexion);
             listaClientes = clientesDAO.listarClientes();
             for (Cliente cliente : listaClientes) {
                 modelCliente.addElement(cliente.toString());
@@ -150,5 +160,10 @@ public class ClientesLista extends javax.swing.JDialog {
             Logger.getLogger(AnimalesAlta.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    @Override
+    public void actualizarClientes() {
+        cargarComboClientes();
     }
 }

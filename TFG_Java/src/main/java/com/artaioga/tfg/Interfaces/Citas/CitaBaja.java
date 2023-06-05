@@ -6,10 +6,12 @@ package com.artaioga.tfg.Interfaces.Citas;
 
 import com.artaioga.tfg.GestionBBDD.CitasDAO;
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.GestionBBDD.Observers.CitasObserver;
 import com.artaioga.tfg.Interfaces.Principal;
 import com.artaioga.tfg.Modelos.Cita;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,17 +22,23 @@ import javax.swing.JOptionPane;
  *
  * @author artai
  */
-public class CitaBaja extends javax.swing.JDialog {
+public class CitaBaja extends javax.swing.JDialog implements CitasObserver {
 
     /**
      * Creates new form BorrarCita
      */
-    public CitaBaja(java.awt.Frame parent, boolean modal,Principal principal) {
+    public CitaBaja(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        //Inicializamos la conexión a la BBDD
+        conexion = ConexionBD.getInstancia().getConexion();
+        //Inicializamos los DAO
+        citasDao = CitasDAO.getInstance(conexion);
+        //Añadimos el observador
+        citasDao.agregarObservador(this);
+        //Cargamos el combo
         jComboBox1.setModel(model);
         cargarComboCitas();
-        this.principal=principal;
     }
 
     /**
@@ -104,15 +112,12 @@ public class CitaBaja extends javax.swing.JDialog {
         Cita citaModificar = listaCitas.get(id_cita);
         //La elimino de la bbdd
         try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            CitasDAO citasDao = new CitasDAO(conexion);
             citasDao.eliminarCita(citaModificar.getIdCita());
             //Acualizo el combo para que los cambios se vean reflejados
             cargarComboCitas();
             //Actualizo la tabla de citas
-            principal.cargarTabla();
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }//GEN-LAST:event_jButtonBajaActionPerformed
 
@@ -147,7 +152,7 @@ public class CitaBaja extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                CitaBaja dialog = new CitaBaja(new javax.swing.JFrame(), true,principal);
+                CitaBaja dialog = new CitaBaja(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -168,17 +173,18 @@ public class CitaBaja extends javax.swing.JDialog {
     DefaultComboBoxModel<Cita> model = new DefaultComboBoxModel<>();
     //Listas
     List<Cita> listaCitas;
-    //Panel
-    private static Principal principal;
+    //Conexion
+    private Connection conexion;
+    //DAO
+    private CitasDAO citasDao;
+
     /**
      * Carga los datos correspondientes en el combo de citas
      */
     private void cargarComboCitas() {
         model.removeAllElements();
         try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            CitasDAO citasDao = new CitasDAO(conexion);
-            listaCitas = citasDao.listarCitas();
+            listaCitas = citasDao.listarCitas(new HashMap<>());
             for (Cita cita : listaCitas) {
                 model.addElement(cita);
             }
@@ -186,5 +192,10 @@ public class CitaBaja extends javax.swing.JDialog {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    @Override
+    public void actualizarCitas() {
+        cargarComboCitas();
     }
 }

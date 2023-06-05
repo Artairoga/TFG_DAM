@@ -8,6 +8,9 @@ import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
 import com.artaioga.tfg.GestionBBDD.CitasDAO;
 import com.artaioga.tfg.GestionBBDD.ClientesDAO;
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.GestionBBDD.Observers.AnimalesObserver;
+import com.artaioga.tfg.GestionBBDD.Observers.CitasObserver;
+import com.artaioga.tfg.GestionBBDD.Observers.ClientesObserver;
 import com.artaioga.tfg.Interfaces.Principal;
 import com.artaioga.tfg.Modelos.Animal;
 import com.artaioga.tfg.Modelos.Cita;
@@ -16,6 +19,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,19 +30,28 @@ import javax.swing.JOptionPane;
  *
  * @author artai
  */
-public class CitaAlta extends javax.swing.JDialog {
+public class CitaAlta extends javax.swing.JDialog implements AnimalesObserver, ClientesObserver {
 
     /**
      * Creates new form NuevaCita
      */
-    public CitaAlta(java.awt.Frame parent, boolean modal, Principal principal) {
+    public CitaAlta(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        //Inicializamos la conexión a la BBDD
+        conexion = ConexionBD.getInstancia().getConexion();
+        //Inicializamos los DAO
+        animalesDAO = AnimalesDAO.getInstance(conexion);
+        clientesDAO = ClientesDAO.getInstance(conexion);
+        citasDao = CitasDAO.getInstance(conexion);
+        //Inicializamos los Observers
+        animalesDAO.agregarObservador(this);
+        clientesDAO.agregarObservador(this);
+        //Cargamos los combos
         jComboBoxClientes.setModel(modelCliente);
         jComboBoxAnimales.setModel(modelAnimal);
         cargarComboAnimales();
         cargarComboClientes();
-        this.principal = principal;
     }
 
     /**
@@ -62,6 +75,8 @@ public class CitaAlta extends javax.swing.JDialog {
         jLabel4 = new javax.swing.JLabel();
         jButtonNueva = new javax.swing.JButton();
         jTextFieldHora = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -92,6 +107,10 @@ public class CitaAlta extends javax.swing.JDialog {
             }
         });
 
+        jLabel6.setText("yyyy-mm-dd");
+
+        jLabel7.setText("hh:mm");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -108,16 +127,23 @@ public class CitaAlta extends javax.swing.JDialog {
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jComboBoxClientes, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel5)
-                    .addComponent(jButtonNueva)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextFieldHora, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
-                            .addComponent(jTextFieldFecha))))
+                            .addComponent(jLabel5)
+                            .addComponent(jButtonNueva)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel4))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jTextFieldHora, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+                                    .addComponent(jTextFieldFecha))
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel7))))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -134,11 +160,13 @@ public class CitaAlta extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextFieldFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldFecha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jTextFieldHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextFieldHora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -156,6 +184,11 @@ public class CitaAlta extends javax.swing.JDialog {
     }//GEN-LAST:event_jTextFieldFechaActionPerformed
 
     private void jButtonNuevaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonNuevaActionPerformed
+        //comprobar que ambos combos tienen algo seleccionado con un if
+        if(jComboBoxAnimales.getSelectedIndex()==-1||jComboBoxAnimales.getSelectedIndex()==-1){
+            JOptionPane.showMessageDialog(this,"Error, no hay nada seleccionado en los combos");
+            return;
+        }
         Cliente cliente = listarCliente.get(jComboBoxClientes.getSelectedIndex());
         Animal animal = listarAnimales.get(jComboBoxAnimales.getSelectedIndex());
         Date fecha = null;
@@ -163,9 +196,9 @@ public class CitaAlta extends javax.swing.JDialog {
         //Try catch para gestionar los formatos de las horas
         try {
             fecha = Date.valueOf(jTextFieldFecha.getText());
-            horaInicio = Time.valueOf(jTextFieldHora.getText());
+            horaInicio = Time.valueOf(jTextFieldHora.getText()+":00");
         } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, "Error,el formato de la fecha o de la hora son incorrectos");
+            JOptionPane.showMessageDialog(this, "Error,el formato de la fecha o de la hora son incorrectos\nFormato fecha: yyyy-mm-dd\nFormato hora: hh:mm");
             return;
         }
         //Cita base (builder pattern)
@@ -178,11 +211,8 @@ public class CitaAlta extends javax.swing.JDialog {
                 .setDescripcion(jTextAreaDescripcion.getText());
         //La inserto en la bbdd
         try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            CitasDAO citasDao = new CitasDAO(conexion);
             citasDao.insertarCita(cita);
             JOptionPane.showMessageDialog(this, "Alta correcta!");
-            principal.cargarTabla();
             this.dispose();
         } catch (SQLException e) {
             System.out.println(e);
@@ -220,7 +250,7 @@ public class CitaAlta extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                CitaAlta dialog = new CitaAlta(new javax.swing.JFrame(), true,principal);
+                CitaAlta dialog = new CitaAlta(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -241,6 +271,8 @@ public class CitaAlta extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextAreaDescripcion;
     private javax.swing.JTextField jTextFieldFecha;
@@ -252,8 +284,12 @@ public class CitaAlta extends javax.swing.JDialog {
     //Modelos listas
     private List<Animal> listarAnimales;
     private List<Cliente> listarCliente;
-    //Principal
-    private static Principal principal;
+    //Conexion
+    private Connection conexion;
+    //DAO
+    private ClientesDAO clientesDAO;
+    private AnimalesDAO animalesDAO;
+    private CitasDAO citasDao;
 
     /**
      * Carga la informacion correspondiente en el combo de animales
@@ -261,9 +297,7 @@ public class CitaAlta extends javax.swing.JDialog {
     private void cargarComboAnimales() {
         modelAnimal.removeAllElements();
         try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
-            listarAnimales = animalesDAO.listar();
+            listarAnimales = animalesDAO.listar(new HashMap<>());
             for (Animal animal : listarAnimales) {
                 modelAnimal.addElement(String.valueOf(animal.getIdAnimal()));
             }
@@ -278,8 +312,6 @@ public class CitaAlta extends javax.swing.JDialog {
     private void cargarComboClientes() {
         modelCliente.removeAllElements();
         try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            ClientesDAO clientesDAO = new ClientesDAO(conexion);
             listarCliente = clientesDAO.listarClientes();
             for (Cliente cliente : listarCliente) {
                 modelCliente.addElement(String.valueOf(cliente.getDni()));
@@ -288,5 +320,15 @@ public class CitaAlta extends javax.swing.JDialog {
             Logger.getLogger(CitaModificar.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    @Override
+    public void actualizarAnimales() {
+        cargarComboAnimales();
+    }
+
+    @Override
+    public void actualizarClientes() {
+        cargarComboClientes();
     }
 }

@@ -1,35 +1,65 @@
 package com.artaioga.tfg.GestionBBDD;
 
+import com.artaioga.tfg.GestionBBDD.Observers.AnimalesObserver;
 import com.artaioga.tfg.Modelos.Animal;
+import com.artaioga.tfg.Modelos.Cita;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AnimalesDAO {
     private Connection conexion;
-
+    private List<AnimalesObserver> observadores = new ArrayList<>();
+    private static AnimalesDAO instancia;
+    public static AnimalesDAO getInstance(Connection conexion) {
+        if (instancia == null) {
+            instancia = new AnimalesDAO(conexion);
+        }
+        return instancia;
+    }
     public AnimalesDAO(Connection conexion) {
         this.conexion = conexion;
     }
 
-    public List<Animal> listar() throws SQLException {
+    public List<Animal> listar(Map<String, ?> whereConditions) throws SQLException {
         List<Animal> listaAnimales = new ArrayList<>();
-        String sql = "SELECT * FROM animales";
-        try (PreparedStatement statement = conexion.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                Animal animal = new Animal()
-                .setIdAnimal(resultSet.getInt("id_animal"))
-                .setIdCliente(resultSet.getInt("id_cliente"))
-                .setNombreAnimal(resultSet.getString("nombre_animal"))
-                .setCaracteristicas(resultSet.getString("caracteristicas"))
-                .setImagen(resultSet.getString("imagen"));
-                listaAnimales.add(animal);
+        StringBuilder sql = new StringBuilder("SELECT * FROM animales");
+        if (!whereConditions.isEmpty()) {
+            sql.append(" WHERE");
+            int conditionCount = 0;
+            for (Map.Entry<String, ?> entry : whereConditions.entrySet()) {
+                String columnName = entry.getKey();
+                Object value = entry.getValue();
+                if (conditionCount > 0) {
+                    sql.append(" AND");
+                }
+                sql.append(" ").append(columnName).append(" = ?");
+                conditionCount++;
+            }
+        }
+        try (PreparedStatement statement = conexion.prepareStatement(sql.toString())) {
+            int parameterIndex = 1;
+            for (Object value : whereConditions.values()) {
+                statement.setObject(parameterIndex, value);
+                parameterIndex++;
+            }
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Animal animal = new Animal()
+                            .setIdAnimal(resultSet.getInt("id_animal"))
+                            .setIdCliente(resultSet.getInt("id_cliente"))
+                            .setNombreAnimal(resultSet.getString("nombre_animal"))
+                            .setCaracteristicas(resultSet.getString("caracteristicas"))
+                            .setImagen(resultSet.getString("imagen"));
+                    listaAnimales.add(animal);
+                }
             }
         }
         return listaAnimales;
     }
+
 
     public Animal buscarAnimal(int idAnimal) throws SQLException {
         Animal animal = null;
@@ -68,6 +98,7 @@ public class AnimalesDAO {
                     throw new SQLException("No se han generado claves primarias para el animal insertado");
                 }
             }
+            notificarObservadores();
             return filasInsertadas;
         }
     }
@@ -83,25 +114,50 @@ public class AnimalesDAO {
         if (filasActualizadas == 0) {
             throw new SQLException("No se ha actualizado ninguna fila en la base de datos");
         }
+        notificarObservadores();
         return filasActualizadas;
     }
 }
     public int eliminarAnimal(int idAnimal) throws SQLException {
-        String sql = "DELETE FROM animales WHERE id_animal = ?";
-        try (PreparedStatement statement = conexion.prepareStatement(sql)) {
-            conexion.setAutoCommit(false); // Desactivar el modo de confirmación automática
+        try {
+            // En caso de borrar un animal, primero listo sus citas y las borro
+            CitasDAO citasDAO = new CitasDAO(conexion);
+            Map<String, Object> whereConditions = Map.of("id_animal", idAnimal);
+            List<Cita> listaCitas = citasDAO.listarCitas(whereConditions);
 
-            statement.setInt(1, idAnimal);
-            int filasEliminadas = statement.executeUpdate();
-
-            conexion.commit(); // Confirmar la transacción
-
-            return filasEliminadas;
-        } catch (SQLException e) {
-            conexion.rollback(); // Revertir la transacción en caso de error
-            throw e;
+            // Eliminar las citas del animal
+            for (Cita cita : listaCitas) {
+                citasDAO.eliminarCita(cita.getIdCita());
+            }
+            conexion.setAutoCommit(false); // Iniciar transacción manualmente
+            // Eliminar el animal
+            String sql = "DELETE FROM animales WHERE id_animal = ?";
+            try (PreparedStatement statement = conexion.prepareStatement(sql)) {
+                statement.setInt(1, idAnimal);
+                int filasEliminadas = statement.executeUpdate();
+                conexion.commit(); // Confirmar la transacción
+                notificarObservadores();
+                return filasEliminadas;
+            } catch (SQLException e) {
+                conexion.rollback(); // Deshacer la transacción en caso de error
+                throw e; // Propagar la excepción
+            }
         } finally {
-            conexion.setAutoCommit(true); // Restaurar el modo de confirmación automática
+            conexion.setAutoCommit(true); // Restaurar el modo de auto-commit
+        }
+    }
+
+    public void agregarObservador(AnimalesObserver observador) {
+        observadores.add(observador);
+    }
+
+    public void eliminarObservador(AnimalesObserver observador) {
+        observadores.remove(observador);
+    }
+
+    private void notificarObservadores() {
+        for (AnimalesObserver observador : observadores) {
+            observador.actualizarAnimales();
         }
     }
 

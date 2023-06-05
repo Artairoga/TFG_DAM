@@ -8,6 +8,9 @@ import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
 import com.artaioga.tfg.GestionBBDD.CitasDAO;
 import com.artaioga.tfg.GestionBBDD.ClientesDAO;
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.GestionBBDD.Observers.AnimalesObserver;
+import com.artaioga.tfg.GestionBBDD.Observers.CitasObserver;
+import com.artaioga.tfg.GestionBBDD.Observers.ClientesObserver;
 import com.artaioga.tfg.Interfaces.Animales.*;
 import com.artaioga.tfg.Interfaces.Citas.CitaAlta;
 import com.artaioga.tfg.Interfaces.Citas.CitaBaja;
@@ -16,8 +19,11 @@ import com.artaioga.tfg.Interfaces.Clientes.*;
 import com.artaioga.tfg.Modelos.Animal;
 import com.artaioga.tfg.Modelos.Cita;
 import com.artaioga.tfg.Modelos.Cliente;
+
+import java.net.ConnectException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,21 +32,33 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
- *
  * @author artai
  */
-public class Principal extends javax.swing.JFrame {
+public class Principal extends javax.swing.JFrame implements CitasObserver, AnimalesObserver, ClientesObserver {
 
     /**
      * Creates new form Test
      */
     public Principal() {
         initComponents();
+        //Inicializar la conexion
+        conexion = ConexionBD.getInstancia().getConexion();
+        //Inicializar los DAO
         tableModel = (DefaultTableModel) jTableCitas.getModel();
-        inicializarConexion();
-        if(conexion!=null){
+        if (conexion != null) {
+            inicializarDAO();
             cargarTabla();
         }
+    }
+
+    private void inicializarDAO() {
+        animalesDAO = AnimalesDAO.getInstance(conexion);
+        clientesDAO = ClientesDAO.getInstance(conexion);
+        citasDAO = CitasDAO.getInstance(conexion);
+        animalesDAO.agregarObservador(this);
+        clientesDAO.agregarObservador(this);
+        citasDAO.agregarObservador(this);
+
     }
 
     /**
@@ -75,12 +93,12 @@ public class Principal extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jTableCitas.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+                new Object[][]{
 
-            },
-            new String [] {
-                "Fecha", "Animal", "Cliente", "Descripcion", "Pendiente"
-            }
+                },
+                new String[]{
+                        "Fecha", "Animal", "Cliente", "Descripcion", "Pendiente"
+                }
         ));
         jScrollPane1.setViewportView(jTableCitas);
 
@@ -191,33 +209,33 @@ public class Principal extends javax.swing.JFrame {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addComponent(jLabelCitas)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonNuevaCita, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonBorrarCita, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonEditarCita, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)))
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jScrollPane1)
+                                        .addComponent(jLabelCitas)
+                                        .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jButtonNuevaCita, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jButtonBorrarCita, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jButtonEditarCita, javax.swing.GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE)))
+                                .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabelCitas)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButtonNuevaCita)
-                    .addComponent(jButtonBorrarCita)
-                    .addComponent(jButtonEditarCita))
-                .addContainerGap())
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabelCitas)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(jButtonNuevaCita)
+                                        .addComponent(jButtonBorrarCita)
+                                        .addComponent(jButtonEditarCita))
+                                .addContainerGap())
         );
 
         pack();
@@ -291,7 +309,7 @@ public class Principal extends javax.swing.JFrame {
         if (citaAlta != null) {
             citaAlta.dispose();
         }
-        citaAlta = new CitaAlta(this, false,this);
+        citaAlta = new CitaAlta(this, false);
         citaAlta.setVisible(true);
     }//GEN-LAST:event_jButtonNuevaCitaActionPerformed
 
@@ -299,7 +317,7 @@ public class Principal extends javax.swing.JFrame {
         if (citaBaja != null) {
             citaBaja.dispose();
         }
-        citaBaja = new CitaBaja(this, false,this);
+        citaBaja = new CitaBaja(this, false);
         citaBaja.setVisible(true);
     }//GEN-LAST:event_jButtonBorrarCitaActionPerformed
 
@@ -307,7 +325,7 @@ public class Principal extends javax.swing.JFrame {
         if (citaModificar != null) {
             citaModificar.dispose();
         }
-        citaModificar = new CitaModificar(this, false,this);
+        citaModificar = new CitaModificar(this, false);
         citaModificar.setVisible(true);
     }//GEN-LAST:event_jButtonEditarCitaActionPerformed
 
@@ -318,7 +336,7 @@ public class Principal extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -395,25 +413,27 @@ public class Principal extends javax.swing.JFrame {
     //Tabla
     private DefaultTableModel tableModel;
     private Connection conexion;
+    //DAOS
+    private AnimalesDAO animalesDAO;
+    private ClientesDAO clientesDAO;
+    private CitasDAO citasDAO;
+
     public void cargarTabla() {
         tableModel.setRowCount(0);
         try {
-            CitasDAO citasDao = new CitasDAO(conexion);
-            AnimalesDAO animalesDao = new AnimalesDAO(conexion);
-            ClientesDAO clientesDao = new ClientesDAO(conexion);
-            List<Cita> listaCitas = citasDao.listarCitas();
+            List<Cita> listaCitas = citasDAO.listarCitas(new HashMap<>());
             Animal animal;
             Cliente cliente;
             for (Cita cita : listaCitas) {
-                animal = animalesDao.buscarAnimal(cita.getIdAnimal());
-                cliente = clientesDao.buscarCliente(cita.getIdCliente());
+                animal = animalesDAO.buscarAnimal(cita.getIdAnimal());
+                cliente = clientesDAO.buscarCliente(cita.getIdCliente());
                 Object[] fila = {
-                    cita.getFecha().toString() + "  -  " + cita.getHoraInicio().toString(),
-                    animal.getTipoAnimal(),
-                    cliente.getDni(),
-                    cita.getDescripcion(),
-                    cita.isPendiente() == true ? "SI" : "NO",
-                    cita.getIdCita()
+                        cita.getFecha().toString() + "  -  " + cita.getHoraInicio().toString(),
+                        animal.getTipoAnimal(),
+                        cliente.getDni(),
+                        cita.getDescripcion(),
+                        cita.isPendiente() == true ? "SI" : "NO",
+                        cita.getIdCita()
                 };
                 tableModel.addRow(fila);
 
@@ -423,7 +443,20 @@ public class Principal extends javax.swing.JFrame {
                     .getName()).log(Level.SEVERE, null, ex);
         }
     }
-    private void inicializarConexion(){
-        conexion = ConexionBD.getInstancia().getConexion();
+
+
+    @Override
+    public void actualizarCitas() {
+        cargarTabla();
+    }
+
+    @Override
+    public void actualizarAnimales() {
+        cargarTabla();
+    }
+
+    @Override
+    public void actualizarClientes() {
+        cargarTabla();
     }
 }

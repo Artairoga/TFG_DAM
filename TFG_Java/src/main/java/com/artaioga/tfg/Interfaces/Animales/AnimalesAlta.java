@@ -7,6 +7,7 @@ package com.artaioga.tfg.Interfaces.Animales;
 import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
 import com.artaioga.tfg.GestionBBDD.ClientesDAO;
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.GestionBBDD.Observers.ClientesObserver;
 import com.artaioga.tfg.Modelos.Animal;
 import com.artaioga.tfg.Modelos.Cliente;
 import com.artairoga.tfg.GestionFTP.FTPController;
@@ -28,7 +29,7 @@ import javax.swing.JOptionPane;
  *
  * @author artai
  */
-public class AnimalesAlta extends javax.swing.JDialog {
+public class AnimalesAlta extends javax.swing.JDialog implements ClientesObserver {
 
     /**
      * Creates new form AnimalesAlta1
@@ -36,6 +37,14 @@ public class AnimalesAlta extends javax.swing.JDialog {
     public AnimalesAlta(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        //Se crea la conexion con la base de datos
+        conexionBD = ConexionBD.getInstancia().getConexion();
+        //Se crea el objeto DAO para poder realizar las operaciones con la base de datos
+        animalesDAO = AnimalesDAO.getInstance(conexionBD);
+        clientesDAO = ClientesDAO.getInstance(conexionBD);
+        //Se añade el observador
+        clientesDAO.agregarObservador(this);
+
         jComboBoxClientes.setModel(modelCliente);
         cargarComboClientes();
     }
@@ -83,7 +92,7 @@ public class AnimalesAlta extends javax.swing.JDialog {
 
         lblTitulo.setText("Dueño");
 
-        lblDuracion.setText("Raza");
+        lblDuracion.setText("Nombre");
 
         lblFechaDeLanzamiento.setText("Caracteristicas");
 
@@ -96,33 +105,35 @@ public class AnimalesAlta extends javax.swing.JDialog {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblTitulo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblDuracion, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblFechaDeLanzamiento, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(6, 6, 6)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(170, 170, 170)
-                        .addComponent(btnAlta))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(44, 44, 44)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblTitulo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblDuracion, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblFechaDeLanzamiento, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(6, 6, 6)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jTextRaza, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
-                            .addComponent(jComboBoxClientes, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jComboBoxClientes, 0, 176, Short.MAX_VALUE)
+                                .addGap(3, 3, 3))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                        .addGap(16, 16, 16)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnAñadirImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(16, 16, 16))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(btnAlta)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnAñadirImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblImagen, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(25, 25, 25)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblImagen, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jComboBoxClientes, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -136,10 +147,10 @@ public class AnimalesAlta extends javax.swing.JDialog {
                             .addComponent(lblFechaDeLanzamiento)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
                 .addGap(35, 35, 35)
-                .addComponent(btnAñadirImagen)
-                .addGap(18, 18, 18)
-                .addComponent(btnAlta)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAñadirImagen)
+                    .addComponent(btnAlta))
+                .addGap(46, 46, 46))
         );
 
         pack();
@@ -189,8 +200,6 @@ public class AnimalesAlta extends javax.swing.JDialog {
         }
         //Por ultimo subo los cambios a la bbdd y cierro la pestaña
         try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
             animalesDAO.insertarAnimal(animal);
             JOptionPane.showMessageDialog(this, "Alta correcta!");
             this.dispose();
@@ -259,6 +268,11 @@ public class AnimalesAlta extends javax.swing.JDialog {
     private List<Cliente> listarCliente;
     //Modelos ComboBox
     private DefaultComboBoxModel<String> modelCliente = new DefaultComboBoxModel<>();
+    //DAO
+    private AnimalesDAO animalesDAO;
+    private ClientesDAO clientesDAO;
+    //Conexion
+    private static Connection conexionBD;
     /**
      * Rellena el combo de clientes de la informacion correspondiente
      */
@@ -275,5 +289,10 @@ public class AnimalesAlta extends javax.swing.JDialog {
             Logger.getLogger(AnimalesAlta.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    @Override
+    public void actualizarClientes() {
+        cargarComboClientes();
     }
 }

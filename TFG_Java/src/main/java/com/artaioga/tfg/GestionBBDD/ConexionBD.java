@@ -1,9 +1,6 @@
 package com.artaioga.tfg.GestionBBDD;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,7 +15,7 @@ public class ConexionBD {
 
     private ConexionBD() {
         Properties propiedades = new Properties();
-        try (InputStream entrada = ConexionBD.class.getClassLoader().getResourceAsStream("config.properties")) {
+        try (InputStream entrada = new FileInputStream("./Resources/config.properties")) {
             propiedades.load(entrada);
             String ip = propiedades.getProperty("db.ip");
             String puerto = propiedades.getProperty("db.port");

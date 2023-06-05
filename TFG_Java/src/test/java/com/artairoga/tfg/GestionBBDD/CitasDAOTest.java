@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +34,7 @@ public class CitasDAOTest {
 
     @Test
     public void testListarCitas() throws SQLException {
-        List<Cita> listaCitas = citasDAO.listarCitas();
+        List<Cita> listaCitas = citasDAO.listarCitas(new HashMap<>());
         assertNotNull(listaCitas);
         Assertions.assertTrue(listaCitas.size() > 0);
 

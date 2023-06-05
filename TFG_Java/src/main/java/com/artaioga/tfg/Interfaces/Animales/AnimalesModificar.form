@@ -144,7 +144,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblDuracion">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Raza"/>
+        <Property name="text" type="java.lang.String" value="Nombre "/>
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lblFechaDeLanzamiento">

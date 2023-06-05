@@ -72,7 +72,8 @@ public class Animal {
 
     @Override
     public String toString() {
-        return "Animal{" + "idAnimal=" + idAnimal + ", idCliente=" + idCliente + ", nombreAnimal=" + nombreAnimal + ", caracteristicas=" + caracteristicas + ", imagen=" + imagen + '}';
+        String tieneImagen = (imagen != null && !imagen.isEmpty()) ? "Sí" : "No";
+        return "Animal{" + "idAnimal=" + idAnimal + ", idCliente=" + idCliente + ", nombreAnimal=" + nombreAnimal + ", caracteristicas=" + caracteristicas + ", imagen=" + tieneImagen + '}';
     }
     
 }

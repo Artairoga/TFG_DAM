@@ -1,13 +1,26 @@
 package com.artaioga.tfg.GestionBBDD;
 
+import com.artaioga.tfg.GestionBBDD.Observers.CitasObserver;
+import com.artaioga.tfg.GestionBBDD.Observers.ClientesObserver;
+import com.artaioga.tfg.Modelos.Animal;
 import com.artaioga.tfg.Modelos.Cliente;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ClientesDAO {
     private Connection conexion;
+    private List<ClientesObserver> observadores = new ArrayList<>();
+    private static ClientesDAO instancia;
+    public static ClientesDAO getInstance(Connection conexion) {
+        if (instancia == null) {
+            instancia = new ClientesDAO(conexion);
+        }
+        return instancia;
+    }
 
     public ClientesDAO(Connection conexion) {
         this.conexion = conexion;
@@ -68,6 +81,7 @@ public class ClientesDAO {
                     throw new SQLException("No se han generado claves primarias para el cliente insertado");
                 }
             }
+            notificarObservadores();
             return filasInsertadas;
         }
     }
@@ -81,26 +95,49 @@ public class ClientesDAO {
             statement.setString(3, cliente.getTelefono());
             statement.setString(4, cliente.getImagen());
             statement.setInt(5, cliente.getId_cliente());
+            notificarObservadores();
             return statement.executeUpdate();
         }
     }
 
-    public int eliminarCliente(int id_cliente) throws SQLException {
-        String sql = "DELETE FROM clientes WHERE id_cliente = ?";
-        try (PreparedStatement statement = conexion.prepareStatement(sql)) {
-            conexion.setAutoCommit(false); // Desactivar el modo de confirmación automática
+    public int eliminarCliente(int idCliente) throws SQLException {
+        try {
+            // En caso de borrar un cliente, primero obtengo la lista de animales que le pertenecen
+            AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
+            Map<String, Object> whereConditions = Map.of("id_cliente", idCliente);
+            List<Animal> listaAnimales = animalesDAO.listar(whereConditions);
 
-            statement.setInt(1, id_cliente);
-            int filasEliminadas = statement.executeUpdate();
+            // Eliminar los animales del cliente
+            for (Animal animal : listaAnimales) {
+                animalesDAO.eliminarAnimal(animal.getIdAnimal());
+            }
+            conexion.setAutoCommit(false); // Iniciar transacción manualmente
+            // Eliminar el cliente
+            String sql = "DELETE FROM clientes WHERE id_cliente = ?";
+            try (PreparedStatement statement = conexion.prepareStatement(sql)) {
+                statement.setInt(1, idCliente);
+                int filasEliminadas = statement.executeUpdate();
+                conexion.commit(); // Confirmar la transacción
+                notificarObservadores();
 
-            conexion.commit(); // Confirmar la transacción
-
-            return filasEliminadas;
-        } catch (SQLException e) {
-            conexion.rollback(); // Revertir la transacción en caso de error
-            throw e;
+                return filasEliminadas;
+            } catch (SQLException e) {
+                conexion.rollback(); // Deshacer la transacción en caso de error
+                throw e; // Propagar la excepción
+            }
         } finally {
-            conexion.setAutoCommit(true); // Restaurar el modo de confirmación automática
+            conexion.setAutoCommit(true); // Restaurar el modo de auto-commit
+        }
+    }
+    public void agregarObservador(ClientesObserver observador) {
+        observadores.add(observador);
+    }
+    public void eliminarObservador(ClientesObserver observador) {
+        observadores.remove(observador);
+    }
+    public void notificarObservadores() {
+        for (ClientesObserver observador : observadores) {
+            observador.actualizarClientes();
         }
     }
 

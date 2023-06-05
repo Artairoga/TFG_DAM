@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +34,7 @@ public class AnimalesDAOTest {
     @Test
     public void testListarAnimales() throws SQLException {
 
-        List<Animal> listaAnimales = animalesDAO.listar();
+        List<Animal> listaAnimales = animalesDAO.listar(new HashMap<>());
         assertNotNull(listaAnimales);
         Assertions.assertTrue(listaAnimales.size() > 0);
 

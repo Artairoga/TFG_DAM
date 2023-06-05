@@ -5,12 +5,13 @@
 package com.artaioga.tfg.Interfaces.Animales;
 
 import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
+import com.artaioga.tfg.GestionBBDD.Observers.AnimalesObserver;
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
 import com.artaioga.tfg.Interfaces.Citas.CitaModificar;
 import com.artaioga.tfg.Modelos.Animal;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,7 +22,7 @@ import javax.swing.JOptionPane;
  *
  * @author artai
  */
-public class AnimalesBaja extends javax.swing.JDialog {
+public class AnimalesBaja extends javax.swing.JDialog implements AnimalesObserver {
 
     /**
      * Creates new form AnimalesBaja
@@ -29,6 +30,13 @@ public class AnimalesBaja extends javax.swing.JDialog {
     public AnimalesBaja(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        //Se crea la conexion a la base de datos
+        conexionBD = ConexionBD.getInstancia().getConexion();
+        //Se inicializa el DAO de animales
+        animalesDAO = AnimalesDAO.getInstance(conexionBD);
+        //Se agrega como observador de la lista de animales
+        animalesDAO.agregarObservador(this);
+        //Se cargan los animales en la lista
         jComboBoxAnimales.setModel(modelAnimal);
         cargarComboAnimales();
     }
@@ -101,13 +109,11 @@ public class AnimalesBaja extends javax.swing.JDialog {
         //Lo doy de baja en la bbdd
         try {
             Connection conexion = ConexionBD.getInstancia().getConexion();
-            AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
+            AnimalesDAO animalesDAO =AnimalesDAO.getInstance(conexion);
             animalesDAO.eliminarAnimal(animalBorrar.getIdAnimal());
             cargarComboAnimales();
-        }catch(SQLIntegrityConstraintViolationException sql){
-            JOptionPane.showMessageDialog(this, "Este animal contiene citas,no puede ser eliminado");
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }//GEN-LAST:event_jButtonBajaActionPerformed
 
@@ -162,15 +168,17 @@ public class AnimalesBaja extends javax.swing.JDialog {
     private List<Animal> listarAnimales;
     //Modelo ComboBox
     private DefaultComboBoxModel<String> modelAnimal = new DefaultComboBoxModel<>();
+    //Conexion
+    private Connection conexionBD;
+    //DAO
+    private AnimalesDAO animalesDAO;
     /**
      * Rellena el combo de animales con la informacion correspondiente
      */
     private void cargarComboAnimales() {
         modelAnimal.removeAllElements();
         try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
-            listarAnimales = animalesDAO.listar();
+            listarAnimales = animalesDAO.listar(new HashMap<>());
             for (Animal animal : listarAnimales) {
                 modelAnimal.addElement(animal.toString());
             }
@@ -178,5 +186,10 @@ public class AnimalesBaja extends javax.swing.JDialog {
             Logger.getLogger(CitaModificar.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    @Override
+    public void actualizarAnimales() {
+        cargarComboAnimales();
     }
 }

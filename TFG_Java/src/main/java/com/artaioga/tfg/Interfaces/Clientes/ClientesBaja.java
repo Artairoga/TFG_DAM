@@ -7,7 +7,9 @@ package com.artaioga.tfg.Interfaces.Clientes;
 import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
 import com.artaioga.tfg.GestionBBDD.ClientesDAO;
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.GestionBBDD.Observers.ClientesObserver;
 import com.artaioga.tfg.Interfaces.Animales.AnimalesAlta;
+import com.artaioga.tfg.Interfaces.Principal;
 import com.artaioga.tfg.Modelos.Animal;
 import com.artaioga.tfg.Modelos.Cliente;
 import java.sql.Connection;
@@ -23,7 +25,7 @@ import javax.swing.JOptionPane;
  *
  * @author artai
  */
-public class ClientesBaja extends javax.swing.JDialog {
+public class ClientesBaja extends javax.swing.JDialog implements ClientesObserver {
 
     /**
      * Creates new form ClientesBaja
@@ -31,6 +33,12 @@ public class ClientesBaja extends javax.swing.JDialog {
     public ClientesBaja(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        //Inicializamos la conexion
+        conexionBD = ConexionBD.getInstancia().getConexion();
+        //Inicializamos el DAO
+        clientesDAO= ClientesDAO.getInstance(conexionBD);
+        //Añadirnos como observadores
+        clientesDAO.agregarObservador(this);
         jComboBoxClientes.setModel(modelCliente);
         cargarComboClientes();
     }
@@ -106,14 +114,10 @@ public class ClientesBaja extends javax.swing.JDialog {
         Cliente clienteBorrar = listaClientes.get(id_cliente);
         //Lo doy de baja en la bbdd
         try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
-            animalesDAO.eliminarAnimal(clienteBorrar.getId_cliente());
+            clientesDAO.eliminarCliente(clienteBorrar.getId_cliente());
             cargarComboClientes();
-        } catch (SQLIntegrityConstraintViolationException sql) {
-            JOptionPane.showMessageDialog(this, "Este cliente contiene citas,no puede ser eliminado");
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -168,11 +172,13 @@ public class ClientesBaja extends javax.swing.JDialog {
     private List<Cliente> listaClientes;
     //Modelo ComboBox
     private DefaultComboBoxModel<String> modelCliente = new DefaultComboBoxModel<>();
+    //Conexion
+    private Connection conexionBD;
+    //DAO
+    private ClientesDAO clientesDAO;
      private void cargarComboClientes() {
         modelCliente.removeAllElements();
         try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            ClientesDAO clientesDAO = new ClientesDAO(conexion);
             listaClientes = clientesDAO.listarClientes();
             for (Cliente cliente : listaClientes) {
                 modelCliente.addElement(String.valueOf(cliente.getDni()));
@@ -181,5 +187,10 @@ public class ClientesBaja extends javax.swing.JDialog {
             Logger.getLogger(AnimalesAlta.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    @Override
+    public void actualizarClientes() {
+        cargarComboClientes();
     }
 }

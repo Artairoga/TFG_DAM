@@ -8,6 +8,9 @@ import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
 import com.artaioga.tfg.GestionBBDD.CitasDAO;
 import com.artaioga.tfg.GestionBBDD.ClientesDAO;
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artaioga.tfg.GestionBBDD.Observers.AnimalesObserver;
+import com.artaioga.tfg.GestionBBDD.Observers.CitasObserver;
+import com.artaioga.tfg.GestionBBDD.Observers.ClientesObserver;
 import com.artaioga.tfg.Interfaces.Principal;
 import com.artaioga.tfg.Modelos.Animal;
 import com.artaioga.tfg.Modelos.Cita;
@@ -16,6 +19,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import java.util.logging.Level;
@@ -26,14 +30,25 @@ import javax.swing.JOptionPane;
  *
  * @author artai
  */
-public class CitaModificar extends javax.swing.JDialog {
+public class CitaModificar extends javax.swing.JDialog implements CitasObserver, ClientesObserver, AnimalesObserver {
 
     /**
      * Creates new form EditarCita
      */
-    public CitaModificar(java.awt.Frame parent, boolean modal,Principal principal) {
+    public CitaModificar(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        //Inicializamos la conexión a la BBDD
+        conexion = ConexionBD.getInstancia().getConexion();
+        //Inicializamos los DAO
+        citasDAO = CitasDAO.getInstance(conexion);
+        clientesDAO = ClientesDAO.getInstance(conexion);
+        animalesDAO = AnimalesDAO.getInstance(conexion);
+        //Añadimos el observador
+        citasDAO.agregarObservador(this);
+        clientesDAO.agregarObservador(this);
+        animalesDAO.agregarObservador(this);
+        //Cargamos los combos
         jComboBoxCitas.setModel(modelCitas);
         jComboBoxClientes.setModel(modelCliente);
         jComboBoxAnimales.setModel(modelAnimal);
@@ -41,7 +56,6 @@ public class CitaModificar extends javax.swing.JDialog {
         cargarComboAnimales();
         cargarComboClientes();
         cargarInfo();
-        this.principal=principal;
     }
 
     /**
@@ -179,6 +193,10 @@ public class CitaModificar extends javax.swing.JDialog {
     }//GEN-LAST:event_jComboBoxCitasActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if(jComboBoxAnimales.getSelectedIndex()==-1||jComboBoxAnimales.getSelectedIndex()==-1||jComboBoxCitas.getSelectedIndex()==-1){
+            JOptionPane.showMessageDialog(this,"Error, no hay nada seleccionado en los combos");
+            return;
+        }
         Cliente cliente = listarCliente.get(jComboBoxClientes.getSelectedIndex());
         Animal animal = listarAnimales.get(jComboBoxAnimales.getSelectedIndex());
         Cita citaModificar = listaCitas.get(jComboBoxCitas.getSelectedIndex());
@@ -186,9 +204,9 @@ public class CitaModificar extends javax.swing.JDialog {
         Time horaInicio = null;
         try {
             fecha = Date.valueOf(jTextFieldFecha.getText());
-            horaInicio = Time.valueOf(jTextFieldHora.getText());
+            horaInicio = Time.valueOf(jTextFieldHora.getText()+":00");
         } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, "Error,el formato de la fecha o de la hora son incorrectos");
+            JOptionPane.showMessageDialog(this, "Error,el formato de la fecha o de la hora son incorrectos\nFormato fecha: yyyy-mm-dd\nFormato hora: hh:mm");
             return;
         }
         Cita cita = new Cita()
@@ -200,14 +218,12 @@ public class CitaModificar extends javax.swing.JDialog {
                 .setPendiente(citaModificar.isPendiente())
                 .setDescripcion(jTextAreaDescripcion.getText());
         try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            CitasDAO citasDao = new CitasDAO(conexion);
-            citasDao.actualizarCita(cita);
+            citasDAO.actualizarCita(cita);
             cargarComboCitas();
             cargarComboAnimales();
             cargarComboClientes();
             cargarInfo();
-            principal.cargarTabla();
+            JOptionPane.showMessageDialog(this, "Cita modificada correctamente");
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -250,7 +266,7 @@ public class CitaModificar extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                CitaModificar dialog = new CitaModificar(new javax.swing.JFrame(), true,principal);
+                CitaModificar dialog = new CitaModificar(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -286,8 +302,13 @@ public class CitaModificar extends javax.swing.JDialog {
     private List<Cita> listaCitas;
     private List<Animal> listarAnimales;
     private List<Cliente> listarCliente;
-    //Panel
-    private static Principal principal;
+    //Conexion
+    private Connection conexion;
+    //DAO
+    private CitasDAO citasDAO;
+    private AnimalesDAO animalesDAO;
+    private ClientesDAO clientesDAO;
+
     /**
      * Carga los datos correspondientes en el combo de citas
      */
@@ -296,7 +317,7 @@ public class CitaModificar extends javax.swing.JDialog {
         try {
             Connection conexion = ConexionBD.getInstancia().getConexion();
             CitasDAO citasDao = new CitasDAO(conexion);
-            listaCitas = citasDao.listarCitas();
+            listaCitas = citasDao.listarCitas(new HashMap<>());
             for (Cita cita : listaCitas) {
                 modelCitas.addElement(cita.toString());
             }
@@ -314,7 +335,7 @@ public class CitaModificar extends javax.swing.JDialog {
         try {
             Connection conexion = ConexionBD.getInstancia().getConexion();
             AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
-            listarAnimales = animalesDAO.listar();
+            listarAnimales = animalesDAO.listar(new HashMap<>());
             for (Animal animal : listarAnimales) {
                 modelAnimal.addElement(String.valueOf(animal.getIdAnimal()));
             }
@@ -398,4 +419,18 @@ public class CitaModificar extends javax.swing.JDialog {
         return -1;
     }
 
+    @Override
+    public void actualizarAnimales() {
+        cargarComboAnimales();
+    }
+
+    @Override
+    public void actualizarCitas() {
+        cargarComboCitas();
+    }
+
+    @Override
+    public void actualizarClientes() {
+        cargarComboClientes();
+    }
 }

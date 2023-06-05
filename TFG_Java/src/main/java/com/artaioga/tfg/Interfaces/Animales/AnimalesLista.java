@@ -5,11 +5,13 @@
 package com.artaioga.tfg.Interfaces.Animales;
 
 import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
+import com.artaioga.tfg.GestionBBDD.Observers.AnimalesObserver;
 import com.artaioga.tfg.GestionBBDD.ConexionBD;
 import com.artaioga.tfg.Interfaces.Citas.CitaModificar;
 import com.artaioga.tfg.Modelos.Animal;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +21,7 @@ import javax.swing.DefaultListModel;
  *
  * @author artai
  */
-public class AnimalesLista extends javax.swing.JDialog {
+public class AnimalesLista extends javax.swing.JDialog implements AnimalesObserver {
 
     /**
      * Creates new form AnimalesLista
@@ -27,6 +29,13 @@ public class AnimalesLista extends javax.swing.JDialog {
     public AnimalesLista(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        //Se crea la conexion a la base de datos
+        conexionBD = ConexionBD.getInstancia().getConexion();
+        //Se inicializa el DAO de animales
+        this.animalesDAO = AnimalesDAO.getInstance(conexionBD);
+        //Se agrega como observador de la lista de animales
+        this.animalesDAO.agregarObservador(this);
+        //Se cargan los animales en la lista
         jListAnimales.setModel(modelAnimal);
         cargarComboAnimales();
     }
@@ -127,15 +136,17 @@ public class AnimalesLista extends javax.swing.JDialog {
     private List<Animal> listaAnimales;
     //Modelos Combo
     private DefaultListModel<String> modelAnimal = new DefaultListModel<>();
+    //DAO
+    private static AnimalesDAO animalesDAO;
+    //Conexion
+    private static Connection conexionBD;
     /**
      * Rellena el combo de animales con la informacion correspondiente
      */
     private void cargarComboAnimales() {
         modelAnimal.removeAllElements();
         try {
-            Connection conexion = ConexionBD.getInstancia().getConexion();
-            AnimalesDAO animalesDAO = new AnimalesDAO(conexion);
-            listaAnimales = animalesDAO.listar();
+            listaAnimales = animalesDAO.listar(new HashMap<>());
             for (Animal animal : listaAnimales) {
                 modelAnimal.addElement(animal.toString());
             }
@@ -143,5 +154,10 @@ public class AnimalesLista extends javax.swing.JDialog {
             Logger.getLogger(CitaModificar.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    @Override
+    public void actualizarAnimales() {
+        cargarComboAnimales();
     }
 }
