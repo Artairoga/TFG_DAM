@@ -1,8 +1,8 @@
 package com.artairoga.tfg.GestionBBDD;
 
-import com.artaioga.tfg.GestionBBDD.ConexionBD;
-import com.artaioga.tfg.GestionBBDD.AnimalesDAO;
-import com.artaioga.tfg.Modelos.Animal;
+import com.artairoga.tfg.GestionBBDD.ConexionBD;
+import com.artairoga.tfg.GestionBBDD.AnimalesDAO;
+import com.artairoga.tfg.Modelos.Animal;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

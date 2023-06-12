@@ -1,7 +1,7 @@
 package com.artairoga.tfg.GestionBBDD;
 
-import com.artaioga.tfg.GestionBBDD.ConexionBD;
-import com.artaioga.tfg.Modelos.Cliente;
+import com.artairoga.tfg.GestionBBDD.ConexionBD;
+import com.artairoga.tfg.Modelos.Cliente;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 public class ClientesDAOTest {
     private Connection conexion;
-    private com.artaioga.tfg.GestionBBDD.ClientesDAO clientesDAO;
+    private com.artairoga.tfg.GestionBBDD.ClientesDAO clientesDAO;
 
     private Cliente cliente = new Cliente()
             .setDni("12345678A")
@@ -24,7 +24,7 @@ public class ClientesDAOTest {
     @BeforeEach
     public void setUp() throws SQLException {
         conexion = ConexionBD.getInstancia().getConexion();
-        clientesDAO = new com.artaioga.tfg.GestionBBDD.ClientesDAO(conexion);
+        clientesDAO = new com.artairoga.tfg.GestionBBDD.ClientesDAO(conexion);
     }
 
     @Test

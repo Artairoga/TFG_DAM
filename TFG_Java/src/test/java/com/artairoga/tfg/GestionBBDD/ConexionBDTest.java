@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artairoga.tfg.GestionBBDD.ConexionBD;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

@@ -1,8 +1,8 @@
 package com.artairoga.tfg.GestionBBDD;
 
-import com.artaioga.tfg.GestionBBDD.ConexionBD;
-import com.artaioga.tfg.GestionBBDD.CitasDAO;
-import com.artaioga.tfg.Modelos.Cita;
+import com.artairoga.tfg.GestionBBDD.ConexionBD;
+import com.artairoga.tfg.GestionBBDD.CitasDAO;
+import com.artairoga.tfg.Modelos.Cita;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -4,7 +4,7 @@
  */
 package com.artairoga.tfg.GestionFTP;
 
-import com.artaioga.tfg.GestionBBDD.ConexionBD;
+import com.artairoga.tfg.GestionBBDD.ConexionBD;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import java.io.File;

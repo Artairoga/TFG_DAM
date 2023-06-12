@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<!DOCTYPE map
+        PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Map Version 2.0//EN"
+        "http://java.sun.com/products/javahelp/map_2_0.dtd">
+<map version="1.0">
+    <mapID target="principal" url="html/main.html"/>
+    <mapID target="clientes" url="html/clientes.html"/>
+    <mapID target="clientesAlta" url="html/clientes_alta.html"/>
+    <mapID target="clientesBaja" url="html/clientes_baja.html"/>
+    <mapID target="clientesModificacion" url="html/clientes_mod.html"/>
+    <mapID target="clientesListar" url="html/clientes_lista.html"/>
+    <mapID target="animales" url="html/animales.html"/>
+    <mapID target="animalesAlta" url="html/animales_alta.html"/>
+    <mapID target="animalesBaja" url="html/animales_baja.html"/>
+    <mapID target="animalesModificacion" url="html/animales_mod.html"/>
+    <mapID target="animalesListar" url="html/animales_lista.html"/>
+    <mapID target="citas" url="html/citas.html"/>
+    <mapID target="citasAlta" url="html/citas_alta.html"/>
+    <mapID target="citasBaja" url="html/citas_baja.html"/>
+    <mapID target="citasModificacion" url="html/citas_mod.html"/>
+    <mapID target="citasListar" url="html/citas_lista.html"/>
+
+</map>

@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='ISO-8859-1'  ?>
+<!DOCTYPE index
+  PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Index Version 1.0//EN"
+         "http://java.sun.com/products/javahelp/index_1_0.dtd">
+<index version="1.0">
+        <indexitem text="Alta de Clientes"    target="clientesAlta"/>
+        <indexitem text="Baja de Clientes"    target="clientesBaja"/>
+        <indexitem text="Modificacion de Clientes"    target="clientesModificacion"/>
+        <indexitem text="Listado de Clientes"    target="clientesListar"/>
+        <indexitem text="Alta de Animales"    target="animalesAlta"/>
+        <indexitem text="Baja de Animales"    target="animalesBaja"/>
+        <indexitem text="Modificacion de Animales"    target="animalesModificacion"/>
+        <indexitem text="Listado de Animales"    target="animalesListar"/>
+        <indexitem text="Alta de Citas"    target="citasAlta"/>
+        <indexitem text="Baja de Citas"    target="citasBaja"/>
+        <indexitem text="Modificacion de Citas"    target="citasModificacion"/>
+        <indexitem text="Lista de Citas"    target="citasListar"/>
+</index>

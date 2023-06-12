@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<toc version="1.0"> <!--  categoryclosedimage="FolderClosed" categoryopenimage="FolderOpened"  
+topicimage="ItemIco"-->
+        <tocitem text="Pagina Principal"    target="principal">
+                <tocitem text="Clientes"    target="clientes">
+                        <tocitem text="Alta de Clientes"    target="clientesAlta"/>
+                        <tocitem text="Baja de Clientes"    target="clientesBaja"/>
+                        <tocitem text="Modificacion de Clientes"    target="clientesModificacion"/>
+                        <tocitem text="Listado de Clientes"    target="clientesListar"/>
+                </tocitem>
+                <tocitem text="Animales"    target="animales">
+                        <tocitem text="Alta de Animales"    target="animalesAlta"/>
+                        <tocitem text="Baja de Animales"    target="animalesBaja"/>
+                        <tocitem text="Modificacion de Animales"    target="animalesModificacion"/>
+                        <tocitem text="Listado de Animales"    target="animalesListar"/>
+                </tocitem>
+                <tocitem text="Citas"    target="citas">
+                        <tocitem text="Alta de Citas"    target="citasAlta"/>
+                        <tocitem text="Baja de Citas"    target="citasBaja"/>
+                        <tocitem text="Modificacion de Citas"    target="citasModificacion"/>
+                        <tocitem text="Lista de Citas"    target="citasListar"/>
+                </tocitem>
+        </tocitem>
+</toc>
