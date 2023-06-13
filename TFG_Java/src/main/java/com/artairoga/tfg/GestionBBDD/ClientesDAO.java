@@ -11,10 +11,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Clase que gestiona las operaciones de la tabla clientes de la base de datos
+ */
 public class ClientesDAO {
     private Connection conexion;
     private List<ClientesObserver> observadores = new ArrayList<>();
     private static ClientesDAO instancia;
+    /**
+     * Método que devuelve la instancia de la clase
+     * @param conexion
+     * @return instancia de la clase
+     */
     public static ClientesDAO getInstance(Connection conexion) {
         if (instancia == null) {
             instancia = new ClientesDAO(conexion);
@@ -22,10 +30,19 @@ public class ClientesDAO {
         return instancia;
     }
 
+    /**
+     * Constructor de la clase
+     * @param conexion
+     */
     public ClientesDAO(Connection conexion) {
         this.conexion = conexion;
     }
 
+    /**
+     * Método que devuelve una lista de clientes
+     * @return listaClientes
+     * @throws SQLException
+     */
     public List<Cliente> listarClientes() throws SQLException {
         List<Cliente> listaClientes = new ArrayList<>();
         String sql = "SELECT * FROM clientes";
@@ -44,6 +61,12 @@ public class ClientesDAO {
         return listaClientes;
     }
 
+    /**
+     * Método que devuelve un cliente
+     * @param id_cliente identificador del cliente
+     * @return cliente
+     * @throws SQLException
+     */
     public Cliente buscarCliente(int id_cliente) throws SQLException {
         Cliente cliente = null;
         String sql = "SELECT * FROM clientes WHERE id_cliente = ?";
@@ -62,6 +85,13 @@ public class ClientesDAO {
         }
         return cliente;
     }
+
+    /**
+     * Método que devuelve una lista de clientes
+     * @param cliente objeto cliente
+     * @return listaClientes filtrada
+     * @throws SQLException
+     */
     public int insertarCliente(Cliente cliente) throws SQLException {
         String sql = "INSERT INTO clientes (dni, nombre_completo, telefono, imagen) " +
                 "VALUES (?, ?, ?, ?)";
@@ -86,6 +116,12 @@ public class ClientesDAO {
         }
     }
 
+    /**
+     * Método que actualiza un cliente
+     * @param cliente objeto cliente
+     * @return filas actualizadas
+     * @throws SQLException
+     */
     public int actualizarCliente(Cliente cliente) throws SQLException {
         String sql = "UPDATE clientes SET dni = ?, nombre_completo = ?, telefono = ?, imagen = ? " +
                 "WHERE id_cliente = ?";
@@ -100,6 +136,12 @@ public class ClientesDAO {
         }
     }
 
+    /**
+     * Método que elimina un cliente
+     * @param idCliente
+     * @return filas eliminadas
+     * @throws SQLException
+     */
     public int eliminarCliente(int idCliente) throws SQLException {
         try {
             // En caso de borrar un cliente, primero obtengo la lista de animales que le pertenecen
@@ -129,12 +171,26 @@ public class ClientesDAO {
             conexion.setAutoCommit(true); // Restaurar el modo de auto-commit
         }
     }
+
+    /**
+     * Método que devuelve una lista de clientes
+     * @param observador objeto observador
+     */
     public void agregarObservador(ClientesObserver observador) {
         observadores.add(observador);
     }
+
+    /**
+     * Método que devuelve una lista de clientes
+     * @param observador objeto observador
+     */
     public void eliminarObservador(ClientesObserver observador) {
         observadores.remove(observador);
     }
+
+    /**
+     * Método que devuelve una lista de clientes
+     */
     public void notificarObservadores() {
         for (ClientesObserver observador : observadores) {
             observador.actualizarClientes();

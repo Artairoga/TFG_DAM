@@ -29,6 +29,9 @@ public class FTPController {
     private String password;
     private String remotePath;
 
+    /**
+     * Constructor de la clase FTPController
+     */
     public FTPController() {
         Properties propiedades = new Properties();
         try (InputStream entrada = new FileInputStream("./Resources/config.properties")) {
@@ -46,6 +49,12 @@ public class FTPController {
 
     }
 
+    /**
+     * Metodo que sube un archivo al servidor ftp
+     * @param localFile archivo local
+     * @param uuid nombre del archivo
+     * @return true si se ha subido correctamente, false en caso contrario
+     */
     public boolean uploadFile(File localFile, String uuid) {
         FTPClient ftpClient = new FTPClient();
         try (FileInputStream inputStream = new FileInputStream(localFile)) {
@@ -77,6 +86,12 @@ public class FTPController {
         }
     }
 
+    /**
+     * Metodo que descarga un archivo del servidor ftp
+     * @param remoteFilePath ruta del archivo en el servidor ftp
+     * @param localFilePath ruta donde se guardara el archivo
+     * @return el archivo descargado
+     */
     public File downloadFile(String remoteFilePath, String localFilePath) {
         FTPClient ftpClient = new FTPClient();
         try (FileOutputStream outputStream = new FileOutputStream(localFilePath)) {
@@ -106,7 +121,12 @@ public class FTPController {
             }
         }
     }
-    //metodo que elimina una imagen del servidor ftp dado su uuid
+
+    /**
+     * Metodo que elimina un archivo del servidor ftp
+     * @param uuid nombre del archivo
+     * @return true si se ha eliminado correctamente, false en caso contrario
+     */
     public boolean deleteFile(String uuid) {
         FTPClient ftpClient = new FTPClient();
         try {

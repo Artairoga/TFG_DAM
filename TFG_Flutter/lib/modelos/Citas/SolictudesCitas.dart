@@ -71,4 +71,16 @@ class SolcitudesCitas {
       throw Exception('Error al cargar las citas');
     }
   }
+  Future<void> cambiarEstadoCita({required int idCita,required int estado}) async {
+    final url = Uri.parse(
+        'http://$ip:$port/api/v1/db/data/v1/veterinaria/Citas/$idCita');
+    final headers = {'xc-token': apikey,'Content-Type': 'application/json',};
+    final body = "{\"Pendiente\":$estado}";
+    final response = await http.patch(url, headers: headers,body: body);
+
+    if (response.statusCode == 200) {
+    } else {
+      throw Exception('Error al cargar las citas');
+    }
+  }
 }

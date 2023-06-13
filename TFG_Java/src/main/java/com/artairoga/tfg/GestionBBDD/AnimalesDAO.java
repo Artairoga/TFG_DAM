@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Clase que gestiona las operaciones de la tabla animales de la base de datos
+ */
 public class AnimalesDAO {
     private Connection conexion;
     private List<AnimalesObserver> observadores = new ArrayList<>();

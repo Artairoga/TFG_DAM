@@ -13,6 +13,9 @@ public class ConexionBD {
 
     private Connection conexion;
 
+    /**
+     * Constructor privado para evitar que se puedan crear instancias de la
+     */
     private ConexionBD() {
         Properties propiedades = new Properties();
         try (InputStream entrada = new FileInputStream("./Resources/config.properties")) {
@@ -30,6 +33,10 @@ public class ConexionBD {
         }
     }
 
+    /**
+     * Metodo para obtener la instancia de la clase
+     * @return ConexionBD instancia de la clase
+     */
     public static ConexionBD getInstancia() {
         if (instancia == null) {
             instancia = new ConexionBD();
@@ -37,6 +44,10 @@ public class ConexionBD {
         return instancia;
     }
 
+    /**
+     * Metodo para obtener la conexion
+     * @return conexion a la base de datos
+     */
     public Connection getConexion() {
         return conexion;
     }

@@ -1,4 +1,5 @@
 import 'package:ante_proyecto/modelos/Animales/SolictudesAnimales.dart';
+import 'package:ante_proyecto/modelos/Citas/SolictudesCitas.dart';
 import 'package:ante_proyecto/modelos/Clientes/SolictudesClientes.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -19,6 +20,7 @@ class DetallesCita extends StatelessWidget {
         Tambien deberia de cambiar el check del pendiente a que solo eso sea
         stateful
   */
+    var estado = cita.pendiente;
     return Scaffold(
       appBar: AppBar(
         title: Text('Detalles de la cita'),
@@ -120,7 +122,7 @@ class _InfoAnimal extends StatelessWidget {
 class _InfoCita extends StatefulWidget {
   _InfoCita({Key? key, required this.cita}) : super(key: key);
   Citas cita;
-
+  var cambioEstado = false;
   @override
   State<_InfoCita> createState() => _InfoCitaState();
 }
@@ -128,7 +130,6 @@ class _InfoCita extends StatefulWidget {
 class _InfoCitaState extends State<_InfoCita> {
   @override
   Widget build(BuildContext context) {
-    bool _isPendiente = widget.cita.pendiente == 1;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -165,14 +166,26 @@ class _InfoCitaState extends State<_InfoCita> {
               style: TextStyle(fontSize: 16),
             ),
             Checkbox(
-              value: _isPendiente,
+              value: widget.cita.pendiente==1?true:false,
               onChanged: (bool? value) {
                 setState(() {
-                  _isPendiente = value!;
+                  widget.cita.pendiente=value! ? 1 : 0;
+                  widget.cambioEstado = !widget.cambioEstado;
                 });
               },
             ),
+            if(widget.cambioEstado)
+              IconButton(
+                icon: Icon(Icons.save),
+                onPressed: () {
+                  setState(() {
+                    widget.cambioEstado=false;
+                    SolcitudesCitas().cambiarEstadoCita(idCita: widget.cita.idCita!, estado: widget.cita.pendiente!);
+                  });
+                },
+              ),
           ],
+
         ),
         SizedBox(height: 10),
         Text(

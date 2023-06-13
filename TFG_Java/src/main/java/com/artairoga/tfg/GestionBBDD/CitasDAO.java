@@ -9,11 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Clase que gestiona las operaciones de la tabla citas de la base de datos
+ */
 public class CitasDAO {
     private Connection conexion;
 
     private List<CitasObserver> observadores = new ArrayList<>();
     private static CitasDAO instancia;
+
+    /**
+     * Método que devuelve la instancia de la clase
+     * @param conexion conexión a la base de datos
+     * @return instancia de la clase
+     */
     public static CitasDAO getInstance(Connection conexion) {
         if (instancia == null) {
             instancia = new CitasDAO(conexion);
@@ -21,10 +30,20 @@ public class CitasDAO {
         return instancia;
     }
 
+    /**
+     * Constructor de la clase
+      * @param conexion conexión a la base de datos
+     */
     public CitasDAO(Connection conexion) {
         this.conexion = conexion;
     }
 
+    /**
+     * Método que devuelve una lista de citas
+     * @param whereConditions condiciones de la consulta
+     * @return lista de citas
+     * @throws SQLException
+     */
     public List<Cita> listarCitas(Map<String, ?> whereConditions) throws SQLException {
         List<Cita> listaCitas = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM citas");
@@ -64,7 +83,12 @@ public class CitasDAO {
         return listaCitas;
     }
 
-
+    /**
+     * Método que devuelve una lista de citas
+     * @param idCita identificador de la cita
+     * @return lista de citas
+     * @throws SQLException
+     */
     public Cita buscarCita(int idCita) throws SQLException {
         Cita cita = null;
         String sql = "SELECT * FROM citas WHERE id_cita = ?";
@@ -86,6 +110,12 @@ public class CitasDAO {
         return cita;
     }
 
+    /**
+     * Método que inserta una cita en la base de datos
+     * @param cita cita a insertar
+     * @return número de filas insertadas
+     * @throws SQLException
+     */
     public int insertarCita(Cita cita) throws SQLException {
         String sql = "INSERT INTO citas (id_cliente, id_animal, fecha, hora_inicio, pendiente, descripcion) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
@@ -112,6 +142,12 @@ public class CitasDAO {
         }
     }
 
+    /**
+     * Método que elimina una cita de la base de datos
+     * @param cita cita a eliminar
+     * @return número de filas eliminadas
+     * @throws SQLException
+     */
 
     public int actualizarCita(Cita cita) throws SQLException {
         String sql = "UPDATE citas SET id_cliente = ?, id_animal = ?, fecha = ?, hora_inicio = ?, pendiente = ?, " +
@@ -130,6 +166,12 @@ public class CitasDAO {
         }
     }
 
+    /**
+     * Método que elimina una cita de la base de datos
+     * @param idCita identificador de la cita a eliminar
+     * @return número de filas eliminadas
+     * @throws SQLException
+     */
     public int eliminarCita(int idCita) throws SQLException {
         String sql = "DELETE FROM citas WHERE id_cita = ?";
         try (PreparedStatement statement = conexion.prepareStatement(sql)) {
@@ -141,14 +183,26 @@ public class CitasDAO {
             throw e;
         }
     }
+
+    /**
+     * Método que devuelve una lista de citas
+     * @param observador
+     */
     public void agregarObservador(CitasObserver observador) {
         observadores.add(observador);
     }
 
+    /**
+     * Método que elimina un observador
+     * @param observador
+     */
     public void eliminarObservador(CitasObserver observador) {
         observadores.remove(observador);
     }
 
+    /**
+     * Metodo que nortifica a los observadores
+     */
     private void notificarObservadores() {
         for (CitasObserver observador : observadores) {
             observador.actualizarCitas();
